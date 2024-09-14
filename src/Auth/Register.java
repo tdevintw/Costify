@@ -9,11 +9,11 @@ import java.sql.*;
 public class Register {
 
 
-    public User createUser(String name, String password, String address , String  phone , boolean isProfessional) throws SQLException {
+    public static User createUser(String name, String password, String address , String  phone , boolean isProfessional) throws SQLException {
         User newUser = null;
         if (isInputValid(name, password , phone)) {
             String query = "INSERT INTO users (name, password , address , phone , isProfessional , role) VALUES (?,?,?,?,?,?)";
-            try (Connection connection = Database.getInstance().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            try (Connection connection = Database.getInstance().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query , Statement.RETURN_GENERATED_KEYS)) {
                 preparedStatement.setString(1, name);
                 preparedStatement.setString(2, password);
                 preparedStatement.setString(3, address);
@@ -44,8 +44,24 @@ public class Register {
     }
 
     public static boolean isNameValid(String name) {
+        if(name.length() <3){
+            System.out.println("name too short");
+            return false;
+        }
+        String query = "SELECT * FROM users WHERE name = ?";
+        try (Connection connection = Database.getInstance().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
-        return name.length() >= 3;
+            preparedStatement.setString(1, name);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()){
+                System.out.println("User name already exist");
+                return false;
+            }
+            return true;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static boolean isPasswordValid(String password) {
@@ -71,5 +87,6 @@ public class Register {
         }
 
     }
+
 
 }
