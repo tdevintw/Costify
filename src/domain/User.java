@@ -16,7 +16,7 @@ public class User {
 
     //this constructor is for creating user when we fetch users data from the database since we have the id now
 
-    public User(int id, String name, String password, String address, String phone, boolean isProfessional, Role role) {
+    public User(int id, String name, String password, String address, String phone, boolean isProfessional, Role role , List<Project> projects) {
         this.id = id;
         this.name = name;
         this.password = password;
@@ -24,6 +24,7 @@ public class User {
         this.phone = phone;
         this.isProfessional = isProfessional;
         this.role = role;
+        this.projects  = projects;
     }
 
     //this constructor is for creating user and register it in the database since we don't know the id
@@ -91,5 +92,13 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public List<Project> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(List<Project> projects) {
+        this.projects = projects;
     }
 }

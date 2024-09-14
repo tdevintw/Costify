@@ -1,8 +1,10 @@
 package Auth;
 
+import domain.Project;
 import domain.User;
 //import Repository.ConsumptionRepository;
 import config.Database;
+import domain.enums.Role;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,32 +18,30 @@ public class Login {
 
     public static User isUserExist(String name, String password) {
 
-        String query = "SELECT * FROM users";
+        String query = "SELECT * FROM users WHERE name = ? AND password = ?";
         try (Connection connection = Database.getInstance().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1,name);
+            preparedStatement.setString(2,password);
             ResultSet users = preparedStatement.executeQuery();
-            List<User> allUsers = new ArrayList<>();
-            User user;
+            User user = null;
+            //here i need to insert the projects into the user i need to create  a method in the project repository that fetch projects for a specific user and the return will be passed to the used
             while (users.next()) {
                 int id = users.getInt("id");
                 String username = users.getString("name");
                 String userPassword = users.getString("password");
-                int userAge = users.getInt("age");
-                user = new User(id , username, userPassword, userAge);
-                allUsers.add(user);
+                String address = users.getString("address");
+                String phone = users.getString("phone");
+                boolean isProfessional = users.getBoolean("isProfessional");
+                String role = users.getString("role");
+                // projects for now null | projects will be added when i will add the project repository
+                user = new User(id,  username,  userPassword,  address,  phone,  isProfessional, Role.valueOf(role) ,  null);
             }
-
-            Optional<User> findUser = allUsers.stream()
-                    .filter(user1 -> user1.getName().equals(name) && user1.getPassword().equals(password))
-                    .findFirst();
-            if (findUser.isEmpty()) {
+            if (user == null) {
                 System.out.println("Name or Password is incorrect");
                 return null;
+            }else{
+                return user;
             }
-            ConsumptionRepository consumptionRepository = new ConsumptionRepository();
-            findUser.get().setConsumptions(consumptionRepository.getUserConsumptions(findUser.get().getId()));
-            return findUser.get();
-
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
