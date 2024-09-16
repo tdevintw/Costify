@@ -7,10 +7,7 @@ import domain.Material;
 import domain.Project;
 import domain.enums.Status;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,4 +79,24 @@ public class ProjectRepository {
         }
     }
 
+    public boolean addProject(int userId , String name , double profitMargin , double costTotal , Status status) {
+        String query = "INSERT INTO projects (user_id , name , profit_margin , cost_total , status) VALUES(?,?,?,?,?)";
+        try(Connection connection = Database.getInstance().getConnection()  ;PreparedStatement preparedStatement = connection.prepareStatement(query)){
+            preparedStatement.setInt(1,userId);
+            preparedStatement.setString(2,name);
+            preparedStatement.setDouble(3,profitMargin);
+            preparedStatement.setDouble(4,costTotal);
+            preparedStatement.setObject(5, status , Types.OTHER);
+            int rowsAdded = preparedStatement.executeUpdate();
+            if(rowsAdded>0){
+                System.out.println("project added");
+                return true;
+            }else{
+                System.out.println("can't add project");
+                return  false;
+            }
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
 }

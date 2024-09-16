@@ -107,14 +107,12 @@ public class Main {
         System.out.println("Welcome Back , " + currentUser.getName());
         System.out.println("""
                 1-My personal info
-                2-Edit Personal info
-                3-Assign Project to a client
-                4-Change user role
-                5-Logout
-                6-Delete Account
+                2-Assign Project to a client
+                3-Change user role
+                4-Logout
                 """);
         int option = input.nextInt();
-        if (option == 5) {
+        if (option == 4) {
             currentUser = null;
             notAuthenticatedMenu();
         }

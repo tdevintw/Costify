@@ -7,10 +7,7 @@ import domain.enums.Role;
 import domain.enums.Status;
 
 import javax.sound.sampled.Port;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +28,7 @@ public class UserRepository {
                 boolean isProfessional = resultSet.getBoolean("isProfessional");
                 Role role = Role.valueOf(resultSet.getString("role"));
                 List<Project> projects = getProjectsOfUser(id);
-                user = new User(id, name, password,  address,  phone,  isProfessional,  role , projects);
+                user = new User(id, name, password, address, phone, isProfessional, role, projects);
                 User finalUser = user;
                 projects.forEach(project -> project.setUser(finalUser));
             }
@@ -53,13 +50,31 @@ public class UserRepository {
                 double profitMargin = resultSet.getDouble("profit_margin");
                 double costTotal = resultSet.getDouble("cost_total");
                 Status status = Status.valueOf(resultSet.getString("status"));
-                Project project = new Project(projectId, name , profitMargin , costTotal , status , projectRepository.getLaborsOfProject(projectId) , projectRepository.getMaterialsOfProject(projectId) , null , projectRepository.getEstimatesOfProject(projectId));
+                Project project = new Project(projectId, name, profitMargin, costTotal, status, projectRepository.getLaborsOfProject(projectId), projectRepository.getMaterialsOfProject(projectId), null, projectRepository.getEstimatesOfProject(projectId));
                 project.getLabors().forEach(labor -> labor.setProject(project));
                 project.getMaterials().forEach(material -> material.setProject(project));
                 project.getEstimates().forEach(estimate -> estimate.setProject(project));
                 projects.add(project);
             }
             return projects;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean updateUserRole(String name, String role) {
+        String query = "UPDATE users SET role = ? WHERE name = ? ";
+        try (Connection connection = Database.getInstance().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setObject(1, Role.valueOf(role), Types.OTHER);
+            preparedStatement.setString(2, name);
+            int updatedRows = preparedStatement.executeUpdate();
+            if (updatedRows > 0) {
+                System.out.println("user role updated ");
+                return true;
+            } else {
+                System.out.println("user name not found");
+                return false;
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
