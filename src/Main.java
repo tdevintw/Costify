@@ -1,14 +1,30 @@
 import Auth.Login;
 import Auth.Register;
+import domain.Labor;
+import domain.Material;
 import domain.User;
 import domain.enums.Role;
+import services.implementations.LaborServiceImpl;
+import services.implementations.MaterialServiceImpl;
+import services.implementations.UserServiceImpl;
+import services.interfaces.LaborService;
+import services.interfaces.MaterialService;
+import services.interfaces.UserService;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
 
     private static User currentUser;
+    private static UserService userService = new UserServiceImpl();
+    private static MaterialService materialService = new MaterialServiceImpl();
+    private static LaborService laborService = new LaborServiceImpl();
+
+
+
+
 
     public static void main(String[] args) throws SQLException {
         while (currentUser == null) {
@@ -62,7 +78,7 @@ public class Main {
         }
     }
 
-    public static void registerMenu() throws SQLException {
+    public static User createUser() throws SQLException {
         Scanner input = new Scanner(System.in);
         Scanner inputInt = new Scanner(System.in);
 
@@ -79,8 +95,12 @@ public class Main {
         System.out.print("are you an individual or a company 1-individual anyNumber-company:  "); //need check what professional means
         int option = inputInt.nextInt();
         isProfessional = option != 1;
-        User user = Register.createUser(name, password, address, phone, isProfessional);
-        if (user == null) {
+        return Register.createUser(name, password, address, phone, isProfessional);
+    }
+
+    public static void registerMenu() throws SQLException {
+        Scanner inputInt = new Scanner(System.in);
+        if (createUser() == null) {
             System.out.println("Do you want to 1-try again or anyNumber-exit");
             int choice = inputInt.nextInt();
             if (choice == 1) {
@@ -89,7 +109,7 @@ public class Main {
                 notAuthenticatedMenu();
             }
         } else {
-            currentUser = user;
+            currentUser = createUser();
             authenticatedMenu();
         }
     }
@@ -112,7 +132,9 @@ public class Main {
                 4-Logout
                 """);
         int option = input.nextInt();
-        if (option == 4) {
+        if (option == 2) {
+            assignProject();
+        } else if (option == 4) {
             currentUser = null;
             notAuthenticatedMenu();
         }
@@ -136,4 +158,47 @@ public class Main {
         }
     }
 
+    public static void assignProject() throws SQLException {
+        Scanner inputInt = new Scanner(System.in);
+        Scanner input = new Scanner(System.in);
+
+        System.out.println("1-Create Client \n 2-Add an existing Client");
+        int option = inputInt.nextInt();
+        if (option == 1) {
+            createUser();
+        } else {
+            System.out.println("Enter client Name");
+            String name = input.nextLine();
+            User user = userService.getUser(name);
+            if(user ==null){
+                System.out.println("Try again");
+                assignProject();
+            }else{
+                System.out.println("Name : "+user.getName());
+                System.out.println("Address: "+user.getAddress());
+                System.out.println("Phone: "+user.getPhone());
+                System.out.println("Do you want to continue with this client (y/n)");
+                String choice = input.nextLine();
+                if(choice.equals("y")){
+                     createProject();
+                }else{
+                    adminMenu();
+                }
+            }
+        }
+
+    }
+
+    public static void createProject(){
+        Scanner input = new Scanner(System.in);
+        Scanner inputDouble = new Scanner(System.in);
+        System.out.println("----General Information----\n");
+        System.out.print("Enter Project Name : ");
+        String name = input.nextLine();
+        System.out.println("Enter Cuisine surface (m²)");
+        double surface = inputDouble.nextDouble();
+        List<Material> materials = materialService.addMaterials();
+        List<Labor> labors = laborService.addLabors();
+
+    }
 }
