@@ -29,13 +29,15 @@ public class User {
 
     //this constructor is for creating user and register it in the database since we don't know the id
 
-    public User(String name, String password, String address, String phone, boolean isProfessional, Role role) {
+    public User(String name, String password, String address, String phone, boolean isProfessional, Role role , List<Project> projects) {
         this.name = name;
         this.password = password;
         this.address = address;
         this.phone = phone;
         this.isProfessional = isProfessional;
         this.role = role;
+        this.projects  = projects;
+
     }
 
     public int getId() {

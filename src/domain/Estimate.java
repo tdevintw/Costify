@@ -9,20 +9,23 @@ public class Estimate {
     private LocalDate creationDate;
     private LocalDate validatedAt;
     private boolean isAccepted;
+    private Project project;
 
-    public Estimate(int id, double costTotal, LocalDate creationDate, LocalDate validatedAt, boolean isAccepted) {
+    public Estimate(int id, double costTotal, LocalDate creationDate, LocalDate validatedAt, boolean isAccepted, Project project) {
         this.id = id;
         this.costTotal = costTotal;
         this.creationDate = creationDate;
         this.validatedAt = validatedAt;
         this.isAccepted = isAccepted;
+        this.project = project;
     }
 
-    public Estimate(double costTotal, LocalDate creationDate, LocalDate validatedAt, boolean isAccepted) {
+    public Estimate(double costTotal, LocalDate creationDate, LocalDate validatedAt, boolean isAccepted, Project project) {
         this.costTotal = costTotal;
         this.creationDate = creationDate;
         this.validatedAt = validatedAt;
         this.isAccepted = isAccepted;
+        this.project = project;
     }
 
     public int getId() {
@@ -63,5 +66,13 @@ public class Estimate {
 
     public void setAccepted(boolean accepted) {
         isAccepted = accepted;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 }
