@@ -25,8 +25,8 @@ public class ProjectServiceImpl implements ProjectService {
                 .sum();
         double materialsTotalCost = materials.stream().mapToDouble(material -> (material.getQuantity() * material.getCostPerUnit() * material.getQualityCoefficient()) + material.costOfTransport())
                 .sum();
-        double costWithoutProfit = (materialsTotalCost + laborsTotalCost) * TVA;
-        double costWithProfit = costWithoutProfit + profitMargin;
+        double costWithoutProfit = (materialsTotalCost + laborsTotalCost) +(materialsTotalCost + laborsTotalCost) * TVA;
+        double costWithProfit = costWithoutProfit + (costWithoutProfit * (profitMargin/100));
         Project project = projectRepository.addProject(client.getId(), projectName, profitMargin, costWithProfit, Status.InProgress);
         project.setUser(client);
         project.setLabors(labors);
@@ -71,8 +71,8 @@ public class ProjectServiceImpl implements ProjectService {
 
         System.out.println("\n\n");
         System.out.print("cost total without profit margin : ");
-        System.out.println(project.getCostTotal() - (project.getCostTotal() * project.getProfitMargin()));
-        System.out.println("\n cost total of profit margin : " + project.getCostTotal() * project.getProfitMargin());
+        System.out.println(project.getCostTotal() - (project.getCostTotal() * (project.getProfitMargin()/100)));
+        System.out.println("\n cost total of profit margin : " + project.getCostTotal() *(project.getProfitMargin()/100));
         System.out.println("\n cost total of project is : " + project.getCostTotal());
 
     }
