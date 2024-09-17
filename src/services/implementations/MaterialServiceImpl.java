@@ -27,9 +27,14 @@ public class MaterialServiceImpl implements MaterialService {
             double costOfTransport = inputDouble.nextDouble();
             System.out.println("Enter the quality coefficient of the material (1.0 = standard, > 1.0 = high quality)");
             double qualityCoefficient = inputDouble.nextDouble();
-            System.out.println("Enter TVA percentage of this product (%)");
-            double TVA = inputDouble.nextDouble() /100;
-            materials.add(new Material(name , "Material" ,TVA , qualityCoefficient , null , costPerUnit , quantity , costOfTransport ));
+//            System.out.println("Enter TVA percentage of this product (%)");
+//            double TVA = inputDouble.nextDouble() /100;
+            boolean isAdded = materials.add(new Material(name , "Material" ,0 , qualityCoefficient , null , costPerUnit , quantity , costOfTransport ));
+           if(isAdded){
+               System.out.println("Material was added successfully");
+           }else{
+               System.out.println("Can't add this Material !");
+           }
             System.out.println("Do you want to add another Material");
             choiceMaterial = input.nextLine();
         }while (choiceMaterial.equals("y"));

@@ -25,9 +25,14 @@ public class LaborServiceImpl implements LaborService {
             System.out.println("Enter the productivity factor (1.0 = standard, > 1.0 = high productivity)");
             double qualityCoefficient = inputDouble.nextDouble();
 
-            System.out.println("Enter TVA percentage of this Labor (%)");
-            double TVA = inputDouble.nextDouble() /100;
-            labors.add(new Labor( name,  "Labor",  TVA,  qualityCoefficient,  null,  costPerHour,  hoursOfWork));
+//            System.out.println("Enter TVA percentage of this Labor (%)");
+//            double TVA = inputDouble.nextDouble() /100;
+           boolean isAdded = labors.add(new Labor( name,  "Labor",  0,  qualityCoefficient,  null,  costPerHour,  hoursOfWork));
+           if(isAdded){
+               System.out.println("Labor added successfully");
+           }else{
+               System.out.println("Can't add Labor !");
+           }
             System.out.println("Do you want to add another Labor");
             choiceMaterial = input.nextLine();
         }while (choiceMaterial.equals("y"));

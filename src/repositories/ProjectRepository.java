@@ -25,7 +25,7 @@ public class ProjectRepository {
                 String name = resultSet.getString("name");
                 String componentType = resultSet.getString("component_type");
                 double tva = resultSet.getDouble("tva");
-                double qualityCoefficient = resultSet.getDouble("quality_coefficent");
+                double qualityCoefficient = resultSet.getDouble("quality_coefficient");
                 double costPerHour = resultSet.getDouble("cost_per_hour");
                 double hoursOfWork = resultSet.getDouble("hours_of_work");
                 labors.add(new Labor(laborId, name, componentType, tva, qualityCoefficient, null, costPerHour, hoursOfWork));
@@ -79,9 +79,9 @@ public class ProjectRepository {
         }
     }
 
-    public boolean addProject(int userId , String name , double profitMargin , double costTotal , Status status) {
+    public Project addProject(int userId , String name , double profitMargin , double costTotal , Status status) {
         String query = "INSERT INTO projects (user_id , name , profit_margin , cost_total , status) VALUES(?,?,?,?,?)";
-        try(Connection connection = Database.getInstance().getConnection()  ;PreparedStatement preparedStatement = connection.prepareStatement(query)){
+        try(Connection connection = Database.getInstance().getConnection()  ;PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS) ){
             preparedStatement.setInt(1,userId);
             preparedStatement.setString(2,name);
             preparedStatement.setDouble(3,profitMargin);
@@ -90,10 +90,18 @@ public class ProjectRepository {
             int rowsAdded = preparedStatement.executeUpdate();
             if(rowsAdded>0){
                 System.out.println("project added");
-                return true;
+                try(ResultSet resultSet = preparedStatement.getGeneratedKeys()){
+                if(resultSet.next()){
+                    int id = resultSet.getInt(1);
+                    return new Project(id , name , profitMargin , costTotal , status , null , null , null , null);
+                }else{
+                    System.out.println("retrieving id failed");
+                    return null;
+                }
+                }
             }else{
                 System.out.println("can't add project");
-                return  false;
+                return  null;
             }
         }catch (SQLException e){
             throw new RuntimeException(e);

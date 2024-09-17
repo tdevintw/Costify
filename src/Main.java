@@ -6,9 +6,11 @@ import domain.User;
 import domain.enums.Role;
 import services.implementations.LaborServiceImpl;
 import services.implementations.MaterialServiceImpl;
+import services.implementations.ProjectServiceImpl;
 import services.implementations.UserServiceImpl;
 import services.interfaces.LaborService;
 import services.interfaces.MaterialService;
+import services.interfaces.ProjectService;
 import services.interfaces.UserService;
 
 import java.sql.SQLException;
@@ -21,6 +23,7 @@ public class Main {
     private static UserService userService = new UserServiceImpl();
     private static MaterialService materialService = new MaterialServiceImpl();
     private static LaborService laborService = new LaborServiceImpl();
+    private static ProjectService projectService = new ProjectServiceImpl();
 
 
 
@@ -180,7 +183,7 @@ public class Main {
                 System.out.println("Do you want to continue with this client (y/n)");
                 String choice = input.nextLine();
                 if(choice.equals("y")){
-                     createProject();
+                     createProject(user);
                 }else{
                     adminMenu();
                 }
@@ -189,7 +192,7 @@ public class Main {
 
     }
 
-    public static void createProject(){
+    public static void createProject(User client){
         Scanner input = new Scanner(System.in);
         Scanner inputDouble = new Scanner(System.in);
         System.out.println("----General Information----\n");
@@ -199,6 +202,21 @@ public class Main {
         double surface = inputDouble.nextDouble();
         List<Material> materials = materialService.addMaterials();
         List<Labor> labors = laborService.addLabors();
+        System.out.println("Do you want to apply TVA to this project ?(y/n)");
+        String choice = input.nextLine();
+        double TVA = 0;
+        if(choice.equals("y")){
+            System.out.println("Enter TVA percentage (%)");
+           TVA = inputDouble.nextDouble()/100;
+        }
+        System.out.println("Do you want to apply profit margin to this project ?(y/n)");
+         choice = input.nextLine();
+        double profitMargin = 0;
+        if(choice.equals("y")){
+            System.out.println("Enter profit margin percentage (%)");
+            profitMargin = inputDouble.nextDouble();
+        }
+        projectService.showProject(projectService.addProject(client , name , materials , labors , TVA , profitMargin ));
 
     }
 }
