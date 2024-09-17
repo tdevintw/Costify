@@ -48,7 +48,7 @@ public class ProjectServiceImpl implements ProjectService {
         System.out.println("Client address : " + project.getUser().getAddress() + "\n");
         System.out.println("----Cost Details---- \n");
         System.out.println("1-Materials : ");
-        project.getMaterials().forEach(material -> System.out.println("-" + material.getName() + ": " + ((material.getQuantity() * material.getCostPerUnit() * material.getQualityCoefficient()) + material.costOfTransport()) + "(quantity : " + material.getQuantity() + ", cost per unit : " + material.getCostPerUnit() + " , quality : " + material + " , cost of transport : " + material.costOfTransport()));
+        project.getMaterials().forEach(material -> System.out.println("-" + material.getName() + ": " + ((material.getQuantity() * material.getCostPerUnit() * material.getQualityCoefficient()) + material.costOfTransport()) + "(quantity : " + material.getQuantity() + ", cost per unit : " + material.getCostPerUnit() + " , quality : " + material.getQualityCoefficient() + " , cost of transport : " + material.costOfTransport()));
         System.out.print("Cost total of materials without tva is : ");
         double materialsTotalCostWithoutTVA = project.getMaterials().stream().mapToDouble(material -> (((material.getQuantity() * material.getCostPerUnit() * material.getQualityCoefficient()) + material.costOfTransport())))
                 .sum();
