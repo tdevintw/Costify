@@ -2,7 +2,7 @@ package services.interfaces;
 
 import domain.User;
 
-public interface UserService {
+public interface  UserService {
 
     User getUser(String name);
 }

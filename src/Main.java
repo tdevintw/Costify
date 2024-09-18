@@ -2,18 +2,14 @@ import Auth.Login;
 import Auth.Register;
 import domain.Labor;
 import domain.Material;
+import domain.Project;
 import domain.User;
 import domain.enums.Role;
-import services.implementations.LaborServiceImpl;
-import services.implementations.MaterialServiceImpl;
-import services.implementations.ProjectServiceImpl;
-import services.implementations.UserServiceImpl;
-import services.interfaces.LaborService;
-import services.interfaces.MaterialService;
-import services.interfaces.ProjectService;
-import services.interfaces.UserService;
-
+import services.implementations.*;
+import services.interfaces.*;
+import java.time.format.DateTimeFormatter;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
@@ -24,6 +20,7 @@ public class Main {
     private static MaterialService materialService = new MaterialServiceImpl();
     private static LaborService laborService = new LaborServiceImpl();
     private static ProjectService projectService = new ProjectServiceImpl();
+    private static EstimateService estimateService = new EstimateServiceImpl();
 
 
 
@@ -155,10 +152,19 @@ public class Main {
                 6-Delete Account
                 """);
         int option = input.nextInt();
-        if (option == 5) {
+        if(option==3){
+            clientEstimate(currentUser);
+        }
+        else if (option == 5) {
             currentUser = null;
             notAuthenticatedMenu();
         }
+    }
+
+    public static void clientEstimate(User client){
+        System.out.println("---------My Estimate : ----");
+        client.getProjects().stream().map(project -> project.getEstimates()).flatMap(list->list.stream())
+                .forEach(estimate -> System.out.println("id : " + estimate.getId() + " , cost total :" + estimate.getCostTotal() + " created at : "+estimate.getCreationDate() +" validated at : " + estimate.getValidatedAt() + " status : " + estimate.isAccepted()));
     }
 
     public static void assignProject() throws SQLException {
@@ -195,6 +201,7 @@ public class Main {
     public static void createProject(User client){
         Scanner input = new Scanner(System.in);
         Scanner inputDouble = new Scanner(System.in);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd ");
         System.out.println("----General Information----\n");
         System.out.print("Enter Project Name : ");
         String name = input.nextLine();
@@ -216,7 +223,17 @@ public class Main {
             System.out.println("Enter profit margin percentage (%)");
             profitMargin = inputDouble.nextDouble();
         }
-        projectService.showProject(projectService.addProject(client , name , materials , labors , TVA , profitMargin ));
+        Project project = projectService.addProject(client , name , materials , labors , TVA , profitMargin );
+        projectService.showProject(project);
+        System.out.println("do you want to save the estimate for this project");
+        String option = input.nextLine();
+        if(option.equals("y")){
+            System.out.println("Enter creation date of estimate");
+            String startDate = input.nextLine();
+            System.out.println("Enter validation date of estimate");
+            String validatedDate = input.nextLine();
+            estimateService.addEstimate(project , LocalDate.parse(startDate,formatter) , LocalDate.parse(validatedDate , formatter));
 
+        }
     }
 }

@@ -4,6 +4,10 @@ import domain.Project;
 import domain.User;
 import config.Database;
 import domain.enums.Role;
+import repositories.UserRepository;
+import services.implementations.UserServiceImpl;
+import services.interfaces.UserService;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class Login {
-
+private static UserRepository userRepository = new UserRepository();
     public static User isUserExist(String name, String password) {
 
         String query = "SELECT * FROM users WHERE name = ? AND password = ?";
@@ -22,7 +26,6 @@ public class Login {
             preparedStatement.setString(2,password);
             ResultSet users = preparedStatement.executeQuery();
             User user = null;
-            //here i need to insert the projects into the user i need to create  a method in the project repository that fetch projects for a specific user and the return will be passed to the used
             while (users.next()) {
                 int id = users.getInt("id");
                 String username = users.getString("name");
@@ -38,6 +41,7 @@ public class Login {
                 System.out.println("Name or Password is incorrect");
                 return null;
             }else{
+                user.setProjects(userRepository.getProjectsOfUser(user.getId()));
                 return user;
             }
         } catch (SQLException e) {
