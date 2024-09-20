@@ -7,20 +7,30 @@ import services.interfaces.UserService;
 import java.sql.SQLException;
 
 public class UserServiceImpl implements UserService {
-private UserRepository userRepository = new UserRepository();
+
+    private UserRepository userRepository = new UserRepository();
+
     @Override
     public User getUser(String name) {
-        try{
+
             User user = userRepository.getUser(name);
-            if(user != null){
+            if (user != null) {
                 System.out.println("Client Found !");
-                return  user;
-            }else{
+                return user;
+            } else {
                 System.out.println("User Not Found ?!");
                 return null;
             }
-        }catch(SQLException e){
-            throw  new RuntimeException(e);
-        }
+
+    }
+
+    @Override
+    public User update(User user) {
+        return userRepository.update(user);
+    }
+
+    @Override
+    public boolean deleteAccount(User user) {
+        return userRepository.deleteAccount(user);
     }
 }

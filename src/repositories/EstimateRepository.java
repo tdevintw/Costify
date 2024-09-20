@@ -1,9 +1,14 @@
 package repositories;
 
 import config.Database;
+import domain.Estimate;
+import domain.Project;
+import domain.User;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EstimateRepository {
 
@@ -26,5 +31,13 @@ public class EstimateRepository {
         }catch (SQLException e){
             throw new RuntimeException(e);
         }
+    }
+
+    public List<Estimate> getEstimatesOfUser(User user){
+
+    }
+
+    public List<Estimate> getEstimatesOfProject(Project project){
+
     }
 }

@@ -41,7 +41,6 @@ private static UserRepository userRepository = new UserRepository();
                 System.out.println("Name or Password is incorrect");
                 return null;
             }else{
-                user.setProjects(userRepository.getProjectsOfUser(user.getId()));
                 return user;
             }
         } catch (SQLException e) {

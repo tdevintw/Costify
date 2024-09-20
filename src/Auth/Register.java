@@ -11,7 +11,7 @@ public class Register {
 
     public static User createUser(String name, String password, String address , String  phone , boolean isProfessional) throws SQLException {
         User newUser = null;
-        if (isInputValid(name, password , phone)) {
+        if (isInputValid(name, 0 ,  password , phone)) {
             String query = "INSERT INTO users (name, password , address , phone , isProfessional , role) VALUES (?,?,?,?,?,?)";
             try (Connection connection = Database.getInstance().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query , Statement.RETURN_GENERATED_KEYS)) {
                 preparedStatement.setString(1, name);
@@ -43,15 +43,17 @@ public class Register {
         return newUser;
     }
 
-    public static boolean isNameValid(String name) {
+    public static boolean isNameValid(String name , int id) {
         if(name.length() <3){
             System.out.println("name too short");
             return false;
         }
-        String query = "SELECT * FROM users WHERE name = ?";
+        String query = "SELECT * FROM users WHERE name = ? AND id != ?";
         try (Connection connection = Database.getInstance().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, name);
+            preparedStatement.setInt(2, id);
+
 
             ResultSet resultSet = preparedStatement.executeQuery();
             if(resultSet.next()){
@@ -72,8 +74,8 @@ public class Register {
         return phone.length() == 17;
     }
 
-    public static boolean isInputValid(String name, String password, String phone) {
-        if (!isNameValid(name)) {
+    public static boolean isInputValid(String name, int id ,  String password, String phone) {
+        if (!isNameValid(name , id)) {
             System.out.println("Name should be at least 3 characters");
             return false;
         } else if (!isPasswordValid(password)) {

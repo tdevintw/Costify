@@ -76,4 +76,11 @@ public class ProjectServiceImpl implements ProjectService {
         System.out.println("\n cost total of project is : " + project.getCostTotal());
 
     }
+
+    @Override
+
+    public List<Project> getProjectsOfUser(User user){
+        return projectRepository.getProjectsOfUser(user);
+    };
+
 }

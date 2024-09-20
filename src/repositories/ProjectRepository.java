@@ -1,10 +1,7 @@
 package repositories;
 
 import config.Database;
-import domain.Estimate;
-import domain.Labor;
-import domain.Material;
-import domain.Project;
+import domain.*;
 import domain.enums.Status;
 
 import java.sql.*;
@@ -107,4 +104,26 @@ public class ProjectRepository {
             throw new RuntimeException(e);
         }
     }
+
+    public List<Project> getProjectsOfUser(User user) {
+        String query = "SELECT * FROM projects WHERE user_id = ?";
+        try (Connection connection = Database.getInstance().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, user.getId());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<Project> projects = new ArrayList<>();
+            while (resultSet.next()) {
+                int projectId = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                double profitMargin = resultSet.getDouble("profit_margin");
+                double costTotal = resultSet.getDouble("cost_total");
+                Status status = Status.valueOf(resultSet.getString("status"));
+                Project project = new Project(projectId, name, profitMargin, costTotal, status,null, null, user, null);
+                projects.add(project);
+            }
+            return projects;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
