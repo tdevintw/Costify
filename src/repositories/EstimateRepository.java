@@ -33,11 +33,26 @@ public class EstimateRepository {
         }
     }
 
-    public List<Estimate> getEstimatesOfUser(User user){
 
-    }
 
     public List<Estimate> getEstimatesOfProject(Project project){
-
+        String q = "SELECT * FROM estimates WHERE project_id = ?";
+        List<Estimate> estimates =  new ArrayList<>();
+        try(Connection connection = Database.getInstance().getConnection() ; PreparedStatement preparedStatement = connection.prepareStatement(q)){
+            preparedStatement.setInt(1,project.getId());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                int id = resultSet.getInt("id");
+                double costTotal = resultSet.getDouble("cost_total");
+                LocalDate creationDate = resultSet.getDate("creation_date").toLocalDate();
+                LocalDate validatedUntil = resultSet.getDate("validated_at").toLocalDate();
+                boolean isAccepted = resultSet.getBoolean("is_accepted");
+                estimates.add(new Estimate(id , costTotal , creationDate , validatedUntil , isAccepted , project));
+            }
+        }catch (SQLException e){
+            throw  new RuntimeException(e);
+        }
+        project.setEstimates(estimates);
+        return estimates;
     }
 }

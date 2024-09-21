@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -313,7 +314,7 @@ public class Main {
     }
 
     //VI-Client Section
-
+    //if the user already fetched estimates from database, it means that projects were already assigned to the user, that's why i check the presence of projects using getProjects().
     public static void myProjects() {
         List<Project> projects;
         if (currentUser.getProjects() == null) {
@@ -340,9 +341,10 @@ public class Main {
 
     }
 
-    public static void myEstimates() {
+    //if the user choose to view estimates before projects , that means both the projects and the estimates will be fetched from database and assigned to user , i also use distinct to select only distinct projects since a project can have many estimates which may result assigning duplicated projects to the user.
+    public static void myEstimates() throws SQLException {
         List<Estimate> estimates = estimateService.getEstimatesOfUser(currentUser);
-
+        currentUser.setProjects(estimates.stream().map(Estimate::getProject).distinct().collect(Collectors.toList()));
         System.out.println("""
                 +----------------------------------+---------------+------------------------+-------------------------+-------------+
                 |       Project Name               |  Cost Total   |      Created At        |       Validated Until   |   Accepted  |
@@ -358,82 +360,12 @@ public class Main {
         }
 
         System.out.println("+----------------------------------+---------------+------------------------+-------------------------+-------------+");
+
+        clientMenu();
     }
 
+    public static void ManageEstimate(){
 
-//    public static void clientEstimate(User client) {
-//        System.out.println("---------My Estimate : ----");
-//        client.getProjects().stream().map(project -> project.getEstimates()).flatMap(list -> list.stream())
-//                .forEach(estimate -> System.out.println("id : " + estimate.getId() + " , cost total :" + estimate.getCostTotal() + " created at : " + estimate.getCreationDate() + " validated at : " + estimate.getValidatedAt() + " status : " + estimate.isAccepted()));
-//    }
-//
-//    public static void assignProject() throws SQLException {
-//        Scanner inputInt = new Scanner(System.in);
-//        Scanner input = new Scanner(System.in);
-//
-//        System.out.println("1-Create Client \n 2-Add an existing Client");
-//        int option = inputInt.nextInt();
-//        if (option == 1) {
-//            createUser();
-//        } else {
-//            System.out.println("Enter client Name");
-//            String name = input.next();
-//            User user = userService.getUser(name);
-//            if (user == null) {
-//                System.out.println("Try again");
-//                assignProject();
-//            } else {
-//                System.out.println("Name : " + user.getName());
-//                System.out.println("Address: " + user.getAddress());
-//                System.out.println("Phone: " + user.getPhone());
-//                System.out.println("Do you want to continue with this client (y/n)");
-//                String choice = input.next();
-//                if (choice.equals("y")) {
-//                    createProject(user);
-//                } else {
-//                    adminMenu();
-//                }
-//            }
-//        }
-//
-//    }
-//
-//    public static void createProject(User client) {
-//        Scanner input = new Scanner(System.in);
-//        Scanner inputDouble = new Scanner(System.in);
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd ");
-//        System.out.println("----General Information----\n");
-//        System.out.print("Enter Project Name : ");
-//        String name = input.next();
-//        System.out.println("Enter Cuisine surface (m²)");
-//        double surface = inputDouble.nextDouble();
-//        List<Material> materials = materialService.addMaterials();
-//        List<Labor> labors = laborService.addLabors();
-//        System.out.println("Do you want to apply TVA to this project ?(y/n)");
-//        String choice = input.next();
-//        double TVA = 0;
-//        if (choice.equals("y")) {
-//            System.out.println("Enter TVA percentage (%)");
-//            TVA = inputDouble.nextDouble() / 100;
-//        }
-//        System.out.println("Do you want to apply profit margin to this project ?(y/n)");
-//        choice = input.next();
-//        double profitMargin = 0;
-//        if (choice.equals("y")) {
-//            System.out.println("Enter profit margin percentage (%)");
-//            profitMargin = inputDouble.nextDouble();
-//        }
-//        Project project = projectService.addProject(client, name, materials, labors, TVA, profitMargin);
-//        projectService.showProject(project);
-//        System.out.println("do you want to save the estimate for this project");
-//        String option = input.next();
-//        if (option.equals("y")) {
-//            System.out.println("Enter creation date of estimate");
-//            String startDate = input.next();
-//            System.out.println("Enter validation date of estimate");
-//            String validatedDate = input.next();
-//            estimateService.addEstimate(project, LocalDate.parse(startDate, formatter), LocalDate.parse(validatedDate, formatter));
-//
-//        }
-//    }
+    }
+
 }
