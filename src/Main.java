@@ -158,7 +158,8 @@ public class Main {
                     1-Manage Personal Information
                     2-Manage Projects
                     3-Assign Project To A Client
-                    4-Logout
+                    4-Manage Users
+                    5-Logout
                     """);
             option = inputInt.nextInt();
             switch (option) {
@@ -172,6 +173,9 @@ public class Main {
                     assignProjectToAClient();
                     break;
                 case 4:
+                    manageUsers();
+                    break;
+                case 5:
                     logout();
                     break;
             }
@@ -314,6 +318,58 @@ public class Main {
 
     }
 
+    public static void manageUsers() throws SQLException {
+        List<User> users = userService.getAll();
+        System.out.println("""
+        +-------+------------------+------------------+----------------------+------------------+------------------+
+        |  ID   |      Name        |      Address     |         Phone        |  Is Professional |       Role       |
+        +-------+------------------+------------------+----------------------+------------------+------------------+""");
+
+        for (User user : users) { // Assuming you have a method to get user details
+            System.out.printf("| %-5s | %-16s | %-16s | %-20s | %-16s | %-16s |%n",
+                    user.getId(),
+                    user.getName(),
+                    user.getAddress(),
+                    user.getPhone(),
+                    user.isProfessional() ? "Yes" : "No",
+                    user.getRole()
+            );
+        }
+        System.out.println("+-------+------------------+------------------+----------------------+------------------+------------------+");
+
+        System.out.println("Do you want to change the role of a user(y/n)");
+        String choice = input.next();
+        if (choice.equals("y")) {
+            System.out.println("Enter the id of the user");
+            int id = inputInt.nextInt();
+            if (id == currentUser.getId()) {
+                System.out.println("You can't change your role");
+            } else {
+                Optional<User> user = users.stream().filter(user1 -> user1.getId() == id).findFirst();
+                if (user.isEmpty()) {
+                    System.out.println("User not found ");
+                } else {
+                    changeRole(user.get());
+                }
+            }
+        }
+        adminMenu();
+    }
+
+    public static void changeRole(User user) throws SQLException {
+        System.out.println("Do you really want to change the role of " + user.getName() + " to " + (user.getRole().equals(Role.Admin) ? "Client" : "Admin")  + " (y/n)");
+        String option = input.next();
+        if(option.equals("y")){
+            if(user.getRole().equals(Role.Admin)){
+                user.setRole(Role.Client);
+            }else{
+                user.setRole(Role.Admin);
+            }
+            userService.update(user);
+        }
+        adminMenu();
+    }
+
     //VI-Client Section
     //if the user already fetched estimates from database, it means that projects were already assigned to the user, that's why i check the presence of projects using getProjects().
     public static void myProjects() {
@@ -363,30 +419,31 @@ public class Main {
         System.out.println("+----------------------------------+---------------+------------------------+-------------------------+-------------+");
         System.out.println("Do you want to manage your estimates(y/n)");
         String choice = input.next();
-        if(choice.equals("y")){
+        if (choice.equals("y")) {
             manageEstimate(estimates);
-        }else{
+        } else {
             clientMenu();
         }
     }
+
     //This method is the one that link the client and the admin since this method affect the status of the project which may lead to be accepted or refused | the client can only accept the estimates within the range of created at and validated until .
     public static void manageEstimate(List<Estimate> estimates) throws SQLException {
 
-        System.out.println("Hi "+currentUser.getName() + " Here you can accept or refuse the estimates of your projects \n You can still accept an estimate after refusing it but just within the range | Once you accept an estimate the project will be launched");
+        System.out.println("Hi " + currentUser.getName() + " Here you can accept or refuse the estimates of your projects \n You can  accept an estimate  just within the range | Once you accept an estimate the project will be launched");
         System.out.println("""
 
-                 +------------------+----------------------------------+---------------+------------------------+-------------------------+
-                 |   Estimate ID    |       Project Name               |  Cost Total   |      Created At        |       Validated Until   |
-                 +------------------+----------------------------------+---------------+------------------------+-------------------------+""");
+                +------------------+----------------------------------+---------------+------------------------+-------------------------+
+                |   Estimate ID    |       Project Name               |  Cost Total   |      Created At        |       Validated Until   |
+                +------------------+----------------------------------+---------------+------------------------+-------------------------+""");
 
-        for (Estimate estimate :estimateService.validEsimates(estimates) ) {
+        for (Estimate estimate : estimateService.validEsimates(estimates)) {
             System.out.printf("| %-16s | %-32s | %-13s | %-22s | %-23s  |%n",
                     estimate.getId(),
                     estimate.getProject().getName(),
                     estimate.getCostTotal() + "$",
                     estimate.getCreationDate(),
                     estimate.getValidatedAt()
-                    );
+            );
         }
 
         System.out.println(
@@ -394,16 +451,20 @@ public class Main {
 
         System.out.println("Enter the id of the estimate you want to accept or refuse");
         int choice = inputInt.nextInt();
-        Optional<Estimate> choosedEstimate = estimates.stream().filter(estimate -> estimate.getId()==choice).findFirst();
-        if(choosedEstimate.isEmpty()){
+        Optional<Estimate> choosedEstimate = estimates.stream().filter(estimate -> estimate.getId() == choice).findFirst();
+        if (choosedEstimate.isEmpty()) {
             System.out.println("Can't found estimate");
             clientMenu();
         }
         System.out.println("Do you want to accept or refuse this Estimate(1-accept 2- refuse)");
         int option = inputInt.nextInt();
-        switch (option){
-            case  1 : acceptAnEstimate(choosedEstimate); break;
-            case 2 : refuseAnEstimate(choosedEstimate); break ;
+        switch (option) {
+            case 1:
+                acceptAnEstimate(choosedEstimate);
+                break;
+            case 2:
+                refuseAnEstimate(choosedEstimate);
+                break;
             default:
                 System.out.println("Enter a valid option");
         }
@@ -413,16 +474,16 @@ public class Main {
     public static void acceptAnEstimate(Optional<Estimate> choosedEstimate) throws SQLException {
         System.out.println("Do you really want to accept this estimate(y/n)");
         String option = input.next();
-        if(option.equals("n")){
+        if (option.equals("n")) {
             clientMenu();
-        }else{
-            if(estimateService.acceptEstimate(choosedEstimate.get())!=null && projectService.acceptProject(choosedEstimate.get().getProject())!=null){
+        } else {
+            if (estimateService.acceptEstimate(choosedEstimate.get()) != null && projectService.acceptProject(choosedEstimate.get().getProject()) != null) {
                 //need to update the project status of the current user and also the acceptance of the estimate so if i want the getProject adn getEstimate it will be updated
-                currentUser.getProjects().stream().filter(project -> project.getId()==choosedEstimate.get().getProject().getId()).forEach(project ->
+                currentUser.getProjects().stream().filter(project -> project.getId() == choosedEstimate.get().getProject().getId()).forEach(project ->
                 {
                     project.setStatus(Status.Completed);
                     project.getEstimates().stream()
-                            .filter(estimate -> estimate.getId()==choosedEstimate.get().getId())
+                            .filter(estimate -> estimate.getId() == choosedEstimate.get().getId())
                             .forEach(estimate -> estimate.setAccepted(true));
                 });
             }
@@ -432,12 +493,12 @@ public class Main {
     public static void refuseAnEstimate(Optional<Estimate> choosedEstimate) throws SQLException {
         System.out.println("Do you really want to refuse this estimate(y/n)");
         String choice = input.next();
-        if(choice.equals("n")){
+        if (choice.equals("n")) {
             clientMenu();
-        }else{
-            if(projectService.refuseProject(choosedEstimate.get().getProject())!=null){
+        } else {
+            if (projectService.refuseProject(choosedEstimate.get().getProject()) != null) {
                 //need to update the project status of the current user so if i want the getProject it will be updated
-                currentUser.getProjects().stream().filter(project -> project.getId()==choosedEstimate.get().getProject().getId()).forEach(project ->project.setStatus(Status.Canceled));
+                currentUser.getProjects().stream().filter(project -> project.getId() == choosedEstimate.get().getProject().getId()).forEach(project -> project.setStatus(Status.Canceled));
             }
         }
     }

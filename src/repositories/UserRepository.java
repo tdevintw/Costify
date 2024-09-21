@@ -16,7 +16,7 @@ import static Auth.Register.isInputValid;
 public class UserRepository {
     private ProjectRepository projectRepository = new ProjectRepository();
 
-    public User getUser(String name)  {
+    public User getUser(String name) {
         String query = "SELECT * FROM users WHERE name = ?";
         try (Connection connection = Database.getInstance().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, name);
@@ -83,7 +83,7 @@ public class UserRepository {
         return user;
     }
 
-    public boolean deleteAccount(User user)  {
+    public boolean deleteAccount(User user) {
         String q = "DELETE FROM users WHERE id = ?";
         try (Connection connection = Database.getInstance().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(q)) {
             preparedStatement.setInt(1, user.getId());
@@ -93,6 +93,27 @@ public class UserRepository {
             } else {
                 return false;
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<User> getAll() {
+        String q = "SELECT * FROM users";
+        List<User> users = new ArrayList<>();
+        try (Connection connection = Database.getInstance().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(q)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                String password = resultSet.getString("password");
+                String address = resultSet.getString("address");
+                String phone = resultSet.getString("phone");
+                boolean isProfessional = resultSet.getBoolean("isprofessional");
+                Role role = Role.valueOf(resultSet.getString("role"));
+                users.add(new User(id, name, password, address, phone, isProfessional, role, null));
+            }
+            return users;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

@@ -5,6 +5,7 @@ import repositories.UserRepository;
 import services.interfaces.UserService;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class UserServiceImpl implements UserService {
 
@@ -32,5 +33,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean deleteAccount(User user) {
         return userRepository.deleteAccount(user);
+    }
+
+    public List<User> getAll() {
+        return userRepository.getAll();
     }
 }
