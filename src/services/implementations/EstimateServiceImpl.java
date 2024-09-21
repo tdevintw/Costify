@@ -3,6 +3,7 @@ package services.implementations;
 import domain.Estimate;
 import domain.Project;
 import domain.User;
+import domain.enums.Status;
 import repositories.EstimateRepository;
 import repositories.ProjectRepository;
 import services.interfaces.EstimateService;
@@ -38,7 +39,7 @@ public class EstimateServiceImpl implements EstimateService {
     @Override
     public List<Estimate> validEsimates(List<Estimate> estimates){
         LocalDate now = LocalDate.now();
-        return estimates.stream().filter(estimate -> !estimate.isAccepted()).filter(estimate -> (estimate.getValidatedAt().isBefore(now) || estimate.getValidatedAt().isEqual(now))).collect(Collectors.toList());
+        return estimates.stream().filter(estimate -> !estimate.isAccepted()).filter(estimate -> (estimate.getValidatedAt().isBefore(now) || estimate.getValidatedAt().isEqual(now)) && estimate.getProject().getStatus()!= Status.Completed).collect(Collectors.toList());
     }
 
     @Override
