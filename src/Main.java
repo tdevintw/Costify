@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
@@ -360,11 +361,62 @@ public class Main {
         }
 
         System.out.println("+----------------------------------+---------------+------------------------+-------------------------+-------------+");
-
-        clientMenu();
+        System.out.println("Do you want to manage your estimates(y/n)");
+        String choice = input.next();
+        if(choice.equals("y")){
+            manageEstimate(estimates);
+        }else{
+            clientMenu();
+        }
     }
+    //This method is the one that link the client and the admin since this method affect the status of the project which may lead to be accepted or refused | the client can only accept the estimates within the range of created at and validated until .
+    public static void manageEstimate(List<Estimate> estimates) throws SQLException {
 
-    public static void ManageEstimate(){
+        System.out.println("Hi "+currentUser.getName() + "Here you can accept the estimates of your projects \n You can still accept an estimate after refusing it but just within the range | Once you accept an estimate the project will be launched");
+        System.out.println("""
+
+                 +------------------+----------------------------------+---------------+------------------------+-------------------------+
+                 |   Estimate ID    |       Project Name               |  Cost Total   |      Created At        |       Validated Until   |
+                 +------------------+----------------------------------+---------------+------------------------+-------------------------+""");
+
+        for (Estimate estimate :estimateService.validEsimates(estimates) ) {
+            System.out.printf("| %-16s | %-32s | %-13s | %-22s | %-23s | %-11s |%n",
+                    estimate.getId(),
+                    estimate.getProject().getName(),
+                    estimate.getCostTotal() + "$",
+                    estimate.getCreationDate(),
+                    estimate.getValidatedAt(),
+                    estimate.isAccepted() ? "Yes" : "No");
+        }
+
+        System.out.println(
+                "+------------------+----------------------------------+---------------+------------------------+-------------------------+");
+
+        System.out.println("Enter the id of the estimate you want to accept");
+        int choice = inputInt.nextInt();
+        Optional<Estimate> choosedEstimate = estimates.stream().filter(estimate -> estimate.getId()==choice).findFirst();
+        if(choosedEstimate.isEmpty()){
+            System.out.println("Cant found estimate");
+            clientMenu();
+        }else{
+            System.out.println("Do you really want to accept this estimate(y/n)");
+            String option = input.next();
+            if(option.equals("n")){
+                clientMenu();
+            }else{
+                if(estimateService.acceptEstimate(choosedEstimate.get())!=null && projectService.acceptProject(choosedEstimate.get().getProject())!=null){
+                    //need to update the project status of the current user adn also teh acceptance of the estimate so if i want the getProject adn getEstimate it will be updated
+                    currentUser.getProjects().stream().filter(project -> project.getId()==choosedEstimate.get().getProject().getId()).forEach(project ->
+                    {
+                        project.setStatus(Status.Completed);
+                        project.getEstimates().stream()
+                                .filter(estimate -> estimate.getId()==choosedEstimate.get().getId())
+                                .forEach(estimate -> estimate.setAccepted(true));
+                    });
+                }
+
+            }
+        }
 
     }
 

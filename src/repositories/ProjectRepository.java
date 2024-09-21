@@ -126,4 +126,21 @@ public class ProjectRepository {
         }
     }
 
+    public Project  acceptProject(Project project){
+        String q = "UPDATE projects SET status = ? WHERE id = ? ";
+        try(Connection connection = Database.getInstance().getConnection() ; PreparedStatement preparedStatement = connection.prepareStatement(q)) {
+            preparedStatement.setObject(1,Status.Completed, Types.OTHER);
+            preparedStatement.setInt(2,project.getId());
+            int rowsAffected = project.getId();
+            if(rowsAffected>0){
+                project.setStatus(Status.Completed);
+                return project;
+            }else{
+                return null;
+            }
+        }catch (SQLException e){
+            throw  new RuntimeException(e);
+        }
+    }
+
 }

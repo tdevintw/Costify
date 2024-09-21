@@ -9,4 +9,6 @@ public interface ProjectService {
     void showProject(Project project);
 
     List<Project> getProjectsOfUser(User user);
+
+    Project acceptProject(Project project);
 }

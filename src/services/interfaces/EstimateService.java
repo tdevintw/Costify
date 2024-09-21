@@ -11,4 +11,8 @@ public interface EstimateService {
     boolean addEstimate(Project project , LocalDate createdDate , LocalDate validatedDate);
 
     List<Estimate> getEstimatesOfUser(User user);
+
+    List<Estimate> validEsimates(List<Estimate> estimates);
+
+    Estimate acceptEstimate(Estimate estimate);
 }

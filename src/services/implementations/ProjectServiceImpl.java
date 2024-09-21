@@ -83,4 +83,9 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.getProjectsOfUser(user);
     };
 
+    @Override
+    public Project acceptProject(Project project){
+        return projectRepository.acceptProject(project);
+    }
+
 }

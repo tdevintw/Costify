@@ -55,4 +55,21 @@ public class EstimateRepository {
         project.setEstimates(estimates);
         return estimates;
     }
+
+    public Estimate acceptEstimate(Estimate estimate){
+        String q= "UPDATE estimates SET is_accepted = ? WHERE id = ?";
+        try(Connection connection = Database.getInstance().getConnection() ; PreparedStatement preparedStatement = connection.prepareStatement(q)){
+            preparedStatement.setBoolean(1,true);
+            preparedStatement.setInt(2,estimate.getId());
+            int rowsUpdated = preparedStatement.executeUpdate();
+            if(rowsUpdated>0){
+                estimate.setAccepted(true);
+                return estimate;
+            }else{
+                return null;
+            }
+        }catch (SQLException e){
+            throw  new RuntimeException(e);
+        }
+    }
 }
