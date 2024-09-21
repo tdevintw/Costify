@@ -372,7 +372,7 @@ public class Main {
     //This method is the one that link the client and the admin since this method affect the status of the project which may lead to be accepted or refused | the client can only accept the estimates within the range of created at and validated until .
     public static void manageEstimate(List<Estimate> estimates) throws SQLException {
 
-        System.out.println("Hi "+currentUser.getName() + "Here you can accept the estimates of your projects \n You can still accept an estimate after refusing it but just within the range | Once you accept an estimate the project will be launched");
+        System.out.println("Hi "+currentUser.getName() + " Here you can accept the estimates of your projects \n You can still accept an estimate after refusing it but just within the range | Once you accept an estimate the project will be launched");
         System.out.println("""
 
                  +------------------+----------------------------------+---------------+------------------------+-------------------------+
@@ -380,13 +380,13 @@ public class Main {
                  +------------------+----------------------------------+---------------+------------------------+-------------------------+""");
 
         for (Estimate estimate :estimateService.validEsimates(estimates) ) {
-            System.out.printf("| %-16s | %-32s | %-13s | %-22s | %-23s | %-11s |%n",
+            System.out.printf("| %-16s | %-32s | %-13s | %-22s | %-23s  |%n",
                     estimate.getId(),
                     estimate.getProject().getName(),
                     estimate.getCostTotal() + "$",
                     estimate.getCreationDate(),
-                    estimate.getValidatedAt(),
-                    estimate.isAccepted() ? "Yes" : "No");
+                    estimate.getValidatedAt()
+                    );
         }
 
         System.out.println(
@@ -396,7 +396,7 @@ public class Main {
         int choice = inputInt.nextInt();
         Optional<Estimate> choosedEstimate = estimates.stream().filter(estimate -> estimate.getId()==choice).findFirst();
         if(choosedEstimate.isEmpty()){
-            System.out.println("Cant found estimate");
+            System.out.println("Can't found estimate");
             clientMenu();
         }else{
             System.out.println("Do you really want to accept this estimate(y/n)");

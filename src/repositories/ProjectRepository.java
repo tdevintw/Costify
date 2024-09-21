@@ -131,7 +131,7 @@ public class ProjectRepository {
         try(Connection connection = Database.getInstance().getConnection() ; PreparedStatement preparedStatement = connection.prepareStatement(q)) {
             preparedStatement.setObject(1,Status.Completed, Types.OTHER);
             preparedStatement.setInt(2,project.getId());
-            int rowsAffected = project.getId();
+            int rowsAffected = preparedStatement.executeUpdate();
             if(rowsAffected>0){
                 project.setStatus(Status.Completed);
                 return project;
