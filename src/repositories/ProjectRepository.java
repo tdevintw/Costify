@@ -143,4 +143,21 @@ public class ProjectRepository {
         }
     }
 
+    public Project  refuseProject(Project project){
+        String q = "UPDATE projects SET status = ? WHERE id = ? ";
+        try(Connection connection = Database.getInstance().getConnection() ; PreparedStatement preparedStatement = connection.prepareStatement(q)) {
+            preparedStatement.setObject(1,Status.Canceled, Types.OTHER);
+            preparedStatement.setInt(2,project.getId());
+            int rowsAffected = preparedStatement.executeUpdate();
+            if(rowsAffected>0){
+                project.setStatus(Status.Canceled);
+                return project;
+            }else{
+                return null;
+            }
+        }catch (SQLException e){
+            throw  new RuntimeException(e);
+        }
+    }
+
 }

@@ -11,4 +11,8 @@ public interface ProjectService {
     List<Project> getProjectsOfUser(User user);
 
     Project acceptProject(Project project);
+
+    Project refuseProject(Project project);
+
+
 }

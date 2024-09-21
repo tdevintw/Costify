@@ -88,4 +88,11 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.acceptProject(project);
     }
 
+    @Override
+    public Project refuseProject(Project project){
+        return projectRepository.refuseProject(project);
+    }
+
+
+
 }
