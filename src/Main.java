@@ -8,6 +8,7 @@ import services.interfaces.*;
 import java.time.format.DateTimeFormatter;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -317,7 +318,55 @@ public class Main {
     public static void addProjectToClient(User client) {
         System.out.println("Information of client selected : \nName" + client.getName() + "\nAddress : " + client.getAddress() + "\nPhone : " + client.getPhone());
         System.out.println("Enter Project Name");
-        String
+        String name = input.next();
+        List<Material> materials = addMaterials();
+    }
+
+    public static  List<Material>  addMaterials(){
+        System.out.println("\n*****Adding of Materials*****");
+        boolean keepAddingMaterial = false;
+        List<Material> materials = new ArrayList<>();
+        do {
+            System.out.println("Enter the name of the material");
+            String materialName = input.next();
+            System.out.println("Enter the quantity of this material");
+            double quantity = inputDouble.nextDouble();
+            System.out.println("Enter cost per unit of this material");
+            double costPerUnit = inputDouble.nextDouble();
+            System.out.println("Enter the cost of transport for this package of material");
+            double costOfTransport = inputDouble.nextDouble();
+            System.out.println("Enter the coefficient quality of this product(1.0 standard ,>1.0 good quality )");
+            double quality = inputDouble.nextDouble();
+            materials.add(new Material(materialName , "Material" , 0 , quality , null , costPerUnit , quantity , costOfTransport)); //must set project and tva afterward
+            System.out.println("Material was added \nDo you want to add another Material(y/n)");
+            String option = input.next();
+            keepAddingMaterial = option.equals("y");
+        }while (keepAddingMaterial);
+
+        return materials;
+    }
+
+    public static  List<Labor>  addLabors(){
+        System.out.println("\n*****Adding of Labors*****");
+        boolean keepAddingLabor = false;
+        List<Labor> labors = new ArrayList<>();
+        do {
+            System.out.println("Enter the speciality of the Labor");
+            String laborName = input.next();
+
+            System.out.println("Enter cost per Hour of this Labor");
+            double costPerHour = inputDouble.nextDouble();
+            System.out.println("Enter Total Hours Worked by this labor");
+            double totalOfHours = inputDouble.nextDouble();
+            System.out.println("Enter the coefficient of professionalism of this Labor(1.0 standard ,>1.0 good quality )");
+            double quality = inputDouble.nextDouble();
+            labors.add(new Labor(laborName , "Labor" , 0 , quality , null , costPerHour , totalOfHours)); //must set project and tva afterward
+            System.out.println("Material was added \nDo you want to add another Material(y/n)");
+            String option = input.next();
+            keepAddingMaterial = option.equals("y");
+        }while (keepAddingMaterial);
+
+        return materials;
     }
 
     public static void assignProjectToAClient() throws SQLException {
@@ -326,17 +375,44 @@ public class Main {
         User user = userService.getUser(name);
         if (user == null) {
             System.out.println("Can't Found the user");
-            System.out.println("Do you want to add a client");
+            System.out.println("Do you want to add this client");
             String option = input.next();
             if (option.equals("y")) {
-                addUser();
+               user =  addUser(name);
             }
         } else if (user.getRole().equals(Role.Admin)) {
             System.out.println("Can't assign a a project to an admin");
-        } else {
-            addProjectToClient(user);
         }
+        addProjectToClient(user);
+
         adminMenu();
+    }
+
+    public static User addUser(String oldName) throws SQLException {
+        System.out.println("Do you want to keep " + oldName + " as the name of the client (y/n)");
+        String option = input.next();
+        String name;
+        if (option.equals("y")) {
+            name = oldName;
+        } else {
+            System.out.println("Enter the Name");
+            name = input.next();
+        }
+        System.out.println("Enter password");
+        String password = input.next();
+        System.out.println("Enter Address");
+        String address = input.next();
+        System.out.println("Enter Phone(+212 xxx-xx-xx-xx)");
+        String phone = input.next();
+        System.out.println("is this client professional (y/n)");
+        String  isProfessional1 = input.next();
+        boolean isProfessional = isProfessional1.equals("y");
+        User newClient = Register.createUser(name , password , address ,phone , isProfessional);
+        if(newClient==null){
+            System.out.println("Can't add user");
+            adminMenu();
+        }
+        return newClient;
     }
 
     public static void manageUsers() throws SQLException {
@@ -391,8 +467,6 @@ public class Main {
         adminMenu();
     }
 
-    public static void addUser(){
-    }
 
     //VI-Client Section
     //if the user already fetched estimates from database, it means that projects were already assigned to the user, that's why i check the presence of projects using getProjects().
