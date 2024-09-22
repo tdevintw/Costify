@@ -315,7 +315,7 @@ public class Main {
 
     }
 
-    public static void addProjectToClient(User client) {
+    public static void addProjectToClient(User client) throws SQLException {
         System.out.println("Information of client selected : \nName" + client.getName() + "\nAddress : " + client.getAddress() + "\nPhone : " + client.getPhone());
         System.out.println("Enter Project Name");
         String projectName = input.next();
