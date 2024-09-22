@@ -9,13 +9,14 @@ import java.util.List;
 import java.util.Scanner;
 
 public class LaborServiceImpl implements LaborService {
+    @Override
     public List<Labor> addLabors() {
         Scanner input = new Scanner(System.in);
         Scanner inputDouble = new Scanner(System.in);
         String choiceMaterial;
         List<Labor> labors = new ArrayList<>();
         System.out.println("----Adding Labors----\n");
-        do{
+        do {
             System.out.println("Enter the type of labor (e.g., Basic Worker, Specialist) : ");
             String name = input.nextLine();
             System.out.println("Enter the hourly rate of this labor");
@@ -27,16 +28,21 @@ public class LaborServiceImpl implements LaborService {
 
 //            System.out.println("Enter TVA percentage of this Labor (%)");
 //            double TVA = inputDouble.nextDouble() /100;
-           boolean isAdded = labors.add(new Labor( name,  "Labor",  0,  qualityCoefficient,  null,  costPerHour,  hoursOfWork));
-           if(isAdded){
-               System.out.println("Labor added successfully");
-           }else{
-               System.out.println("Can't add Labor !");
-           }
+            boolean isAdded = labors.add(new Labor(name, "Labor", 0, qualityCoefficient, null, costPerHour, hoursOfWork));
+            if (isAdded) {
+                System.out.println("Labor added successfully");
+            } else {
+                System.out.println("Can't add Labor !");
+            }
             System.out.println("Do you want to add another Labor");
             choiceMaterial = input.nextLine();
-        }while (choiceMaterial.equals("y"));
+        } while (choiceMaterial.equals("y"));
         return labors;
+    }
+
+    @Override
+    public double costTotalOfALabor(Labor labor) {
+        return labor.getQualityCoefficient() * labor.getHoursOfWork() * labor.getCostPerHour();
     }
 
 }

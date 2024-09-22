@@ -318,12 +318,39 @@ public class Main {
     public static void addProjectToClient(User client) {
         System.out.println("Information of client selected : \nName" + client.getName() + "\nAddress : " + client.getAddress() + "\nPhone : " + client.getPhone());
         System.out.println("Enter Project Name");
-        String name = input.next();
+        String projectName = input.next();
         List<Material> materials = addMaterials();
-    }
+        List<Labor> labors = addLabors();
+        double TVA = 0;
+        double discount = 0;
+        double profitMargin = 0 ;
+        System.out.println("\n*****Calculating of cost total*****\n");
+        System.out.println("Do you want to apply TVA to this Project(y/n)");
+        String choice = input.next();
+        if(choice.equals("y")){
+            System.out.println("Enter TVA percentage (%)");
+            double percentage = inputDouble.nextDouble();
+            TVA =  percentage /100;
+        }
+        System.out.println("this user is "  + ((client.isProfessional()) ? " a company" : " An individual ") + " Do you want to apply a discount");
+        choice = input.next();
+        if(choice.equals("y")){
+            System.out.println("Enter Discount percentage (%)");
+            double percentage = inputDouble.nextDouble();
+            discount =  percentage /100;
+        }
+        System.out.println("Do you want to apply Profit margin to this Project(y/n)");
+        choice = input.next();
+        if(choice.equals("y")){
+            System.out.println("Enter TVA percentage (%)");
+            double percentage = inputDouble.nextDouble();
+            profitMargin =  percentage /100;
+        }
+        resultOfAProject(projectName , client , materials , labors , TVA , discount , profitMargin);
+        }
 
     public static  List<Material>  addMaterials(){
-        System.out.println("\n*****Adding of Materials*****");
+        System.out.println("\n*****Adding of Materials*****\n");
         boolean keepAddingMaterial = false;
         List<Material> materials = new ArrayList<>();
         do {
@@ -347,7 +374,7 @@ public class Main {
     }
 
     public static  List<Labor>  addLabors(){
-        System.out.println("\n*****Adding of Labors*****");
+        System.out.println("\n*****Adding of Labors*****\n");
         boolean keepAddingLabor = false;
         List<Labor> labors = new ArrayList<>();
         do {
@@ -361,13 +388,64 @@ public class Main {
             System.out.println("Enter the coefficient of professionalism of this Labor(1.0 standard ,>1.0 good quality )");
             double quality = inputDouble.nextDouble();
             labors.add(new Labor(laborName , "Labor" , 0 , quality , null , costPerHour , totalOfHours)); //must set project and tva afterward
-            System.out.println("Material was added \nDo you want to add another Material(y/n)");
+            System.out.println("Labor was added \nDo you want to add another Labor(y/n)");
             String option = input.next();
-            keepAddingMaterial = option.equals("y");
-        }while (keepAddingMaterial);
+            keepAddingLabor = option.equals("y");
+        }while (keepAddingLabor);
 
-        return materials;
+        return labors;
     }
+
+    public static void resultOfAProject(String projectName , User client , List<Material> materials , List<Labor> labors ,double TVA , double discount , double profitMargin) throws SQLException {
+        System.out.println("\n***Result of calculations***\n");
+        System.out.println("Name of the project :"+projectName);
+        System.out.println("Client address :"+client.getAddress());
+        System.out.println("Details of costs");
+        System.out.println("1-Materials:");
+        double totalForMaterials = 0;
+        for (Material material : materials){
+            double costOfMaterialPackage = materialService.costTotalOfAMaterialPackage(material);
+            System.out.println("-"+material.getName()+" : " +costOfMaterialPackage+"$(quantity : "+material.getQuantity() + ", cost per unit : "+material.getCostPerUnit()+"$ ,quality : " + material.getQualityCoefficient() + ",cost of transport : "+material.costOfTransport()+"$)");
+            totalForMaterials += costOfMaterialPackage;
+        }
+        System.out.println("Total cost of Materials without TVA is :" + totalForMaterials + "$");
+        System.out.println("Total cost of Materials with TVA is :" + (totalForMaterials+(totalForMaterials*TVA)) + "$");
+
+        System.out.println("\n\n2-Labors:");
+        double totalForLabors = 0;
+        for (Labor labor : labors){
+            double costOfLabor = laborService.costTotalOfALabor(labor);
+            System.out.println("-"+labor.getName()+":"+costOfLabor+"$(cost per hour : "+labor.getCostPerHour() + ",hours worked: "+labor.getHoursOfWork()+" ,productivity : "+labor.getQualityCoefficient());
+            totalForLabors += costOfLabor;
+        }
+        System.out.println("Total cost of labors without TVA is :" + totalForLabors + "$");
+        System.out.println("Total cost of labors with TVA is :" + totalForLabors+(totalForLabors*TVA) + "$");
+        double totalCostWithTVA = (totalForLabors+totalForMaterials)+((totalForLabors+totalForMaterials)*TVA);
+        System.out.println("\n\n3-Cost total before profit margin is : " +totalCostWithTVA+"$");
+        double profitMarginCost = totalCostWithTVA*profitMargin;
+        System.out.println("4-Profit margin("+profitMargin*100+"%) : "+profitMarginCost+"$");
+        double discountCost = (profitMarginCost+totalCostWithTVA)*discount;
+        System.out.println("5-Discount("+discount*100+"%) : "+ discountCost+"$");
+        double costTotal = totalCostWithTVA+profitMarginCost-discountCost;
+        System.out.println("Cost total of project after all is : "+costTotal);
+        System.out.println("\nDo you want to save the estimate of the project(y/n)");
+        String option = input.next();
+        if(option.equals("y")){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            System.out.println("Enter creation date of estimate ");
+            String createdAt = input.next();
+            System.out.println("Validated until");
+            String validatedUntilString = input.next();
+            LocalDate creationDate = LocalDate.parse(createdAt,formatter);
+            LocalDate validatedUntil = LocalDate.parse(validatedUntilString,formatter);
+            //insert project into the database + labors + materials + estimate
+            System.out.println("Project and Estimate was saved");
+        }else{
+            System.out.println("All you previous data will be deleted...");
+            adminMenu();
+        }
+    }
+
 
     public static void assignProjectToAClient() throws SQLException {
         System.out.println("Enter Client Name");

@@ -40,4 +40,9 @@ public class MaterialServiceImpl implements MaterialService {
         }while (choiceMaterial.equals("y"));
         return materials;
     }
+
+    @Override
+    public double costTotalOfAMaterialPackage(Material material){
+        return (material.getQuantity()*material.getCostPerUnit()*material.getQualityCoefficient())+material.costOfTransport();
+    }
 }
