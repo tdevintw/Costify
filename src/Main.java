@@ -314,16 +314,37 @@ public class Main {
 
     }
 
-    public static void assignProjectToAClient() {
+    public static void addProjectToClient(User client) {
+        System.out.println("Information of client selected : \nName" + client.getName() + "\nAddress : " + client.getAddress() + "\nPhone : " + client.getPhone());
+        System.out.println("Enter Project Name");
+        String
+    }
 
+    public static void assignProjectToAClient() throws SQLException {
+        System.out.println("Enter Client Name");
+        String name = input.next();
+        User user = userService.getUser(name);
+        if (user == null) {
+            System.out.println("Can't Found the user");
+            System.out.println("Do you want to add a client");
+            String option = input.next();
+            if (option.equals("y")) {
+                addUser();
+            }
+        } else if (user.getRole().equals(Role.Admin)) {
+            System.out.println("Can't assign a a project to an admin");
+        } else {
+            addProjectToClient(user);
+        }
+        adminMenu();
     }
 
     public static void manageUsers() throws SQLException {
         List<User> users = userService.getAll();
         System.out.println("""
-        +-------+------------------+------------------+----------------------+------------------+------------------+
-        |  ID   |      Name        |      Address     |         Phone        |  Is Professional |       Role       |
-        +-------+------------------+------------------+----------------------+------------------+------------------+""");
+                +-------+------------------+------------------+----------------------+------------------+------------------+
+                |  ID   |      Name        |      Address     |         Phone        |  Is Professional |       Role       |
+                +-------+------------------+------------------+----------------------+------------------+------------------+""");
 
         for (User user : users) { // Assuming you have a method to get user details
             System.out.printf("| %-5s | %-16s | %-16s | %-20s | %-16s | %-16s |%n",
@@ -357,17 +378,20 @@ public class Main {
     }
 
     public static void changeRole(User user) throws SQLException {
-        System.out.println("Do you really want to change the role of " + user.getName() + " to " + (user.getRole().equals(Role.Admin) ? "Client" : "Admin")  + " (y/n)");
+        System.out.println("Do you really want to change the role of " + user.getName() + " to " + (user.getRole().equals(Role.Admin) ? "Client" : "Admin") + " (y/n)");
         String option = input.next();
-        if(option.equals("y")){
-            if(user.getRole().equals(Role.Admin)){
+        if (option.equals("y")) {
+            if (user.getRole().equals(Role.Admin)) {
                 user.setRole(Role.Client);
-            }else{
+            } else {
                 user.setRole(Role.Admin);
             }
             userService.update(user);
         }
         adminMenu();
+    }
+
+    public static void addUser(){
     }
 
     //VI-Client Section
