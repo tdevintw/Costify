@@ -16,6 +16,21 @@ I'm a developer who loves and uses Laravel to create web applications. My motto 
 - **View Projects and Estimates**: Users can view a list of their projects and estimates.
 - **Filter Projects**: Users can filter projects by various criteria such as total cost, date range, or specific activities.
 
+## Client Features
+
+- **User Registration and Login**: Clients can create an account and log in to access their dashboard.
+- **Manage Projects**: Clients can  view their own projects.
+- **Add and Manage Labor**: Clients can add labor costs associated with their projects and manage labor details.
+- **Generate Estimates**: Clients can manage their estimates of their projects.
+- **View and Edit Personal Information**: Clients can view and update their personal information.
+
+## Admin Features
+
+- **User Management**: Admins can add , view, and delete user accounts.
+- **Project Management**: Admins can view, update, and delete any project in the system.
+- **Material and Labor Management**: Admins can add  material and labor entries for the project.
+- **Generate System-wide Reports**: Admins can generate reports that provide insights into overall system usage, project costs, and user activity.
+
 ## Code Overview
 
 The project contains the following key components:
