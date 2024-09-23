@@ -394,7 +394,7 @@ public class Main {
     }
 
     public static void editProject(List<Project> projects) throws SQLException {
-        if(filtredProjects(projects)==0){
+        if (filtredProjects(projects) == 0) {
             System.out.println("There is not projects to manage");
             adminMenu();
         }
@@ -433,10 +433,33 @@ public class Main {
                     System.out.println("enter a valid number");
                     adminMenu();
             }
-            projectService.editProject(getProject);
+            if (projectService.editProject(getProject) != null) {
+                System.out.println("Do you want to generate a new estimate for the project after updating it(y/n)");
+                String choice = input.nextLine();
+                if (choice.equals("y")) {
+                    addNewEstimate(getProject);
+                }
+            }
 
             adminMenu();
 
+        }
+    }
+
+    public static void addNewEstimate(Project project) {
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        System.out.println("Enter creation date of the new estimate ");
+        String createdIn = input.nextLine();
+        input.nextLine();
+        System.out.println("Validate until");
+        String validatedUntilString = input.nextLine();
+        input.nextLine();
+        LocalDate creationDate = LocalDate.parse(createdIn, format);
+        LocalDate validatedUntil = LocalDate.parse(validatedUntilString, format);
+
+        Estimate estimate = estimateService.addEstimate(project.getId(), project.getCostTotal(), creationDate, validatedUntil);
+        if (estimate != null) {
+            System.out.println("estimate was added");
         }
     }
 
@@ -796,7 +819,7 @@ public class Main {
 
     //This method is the one that link the client and the admin since this method affect the status of the project which may lead to be accepted or refused | the client can only accept the estimates within the range of created at and validated until .
     public static void manageEstimate(List<Estimate> estimates) throws SQLException {
-
+        List<Estimate> validatedEstimates = estimateService.validEsimates(estimates);
         System.out.println("Hi " + currentUser.getName() + " Here you can accept or refuse the estimates of your projects \n You can  accept an estimate  just within the range | Once you accept an estimate the project will be launched");
         System.out.println("""
 
@@ -804,7 +827,7 @@ public class Main {
                 |   Estimate ID    |       Project Name               |  Cost Total   |      Created At        |       Validated Until   |
                 +------------------+----------------------------------+---------------+------------------------+-------------------------+""");
 
-        for (Estimate estimate : estimateService.validEsimates(estimates)) {
+        for (Estimate estimate : validatedEstimates) {
             System.out.printf("| %-16s | %-32s | %-13s | %-22s | %-23s  |%n",
                     estimate.getId(),
                     estimate.getProject().getName(),
@@ -816,8 +839,11 @@ public class Main {
 
         System.out.println(
                 "+------------------+----------------------------------+---------------+------------------------+-------------------------+");
-        System.out.println("There is not estimates to manage ");
-        clientMenu();
+        if (validatedEstimates.isEmpty()) {
+            System.out.println("There is not estimates to manage ");
+            clientMenu();
+        }
+
         System.out.println("Enter the id of the estimate you want to accept or refuse");
         int choice = input.nextInt();
         input.nextLine();
