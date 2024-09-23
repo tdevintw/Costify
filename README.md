@@ -71,6 +71,15 @@ The project contains the following key components:
 
 - **Main**: Entry point of the application, handles user menus and interactions.
 
+- **Steps To Create the Jar file/**
+    - **Compile the main file**: we need to compile the enter point of our codd main.ja using the command javac main.java , we will take class file and we will put it into a new folder at the root called srcr
+    - **Copying all the other classes**: since IntelliJ compile our base code to class code and putting them into the out/ folder we will copy the classes of the out/production folder and we will paste it into the srcr folder aside the Main.class 
+    - **Creating of the MANIFEST.MF**: we will create a mf file that reference to the Main.class | MANIFEST file will include : Manifest-Version: 1.0  and 
+      Main-Class: Main  
+    - **Running the command **:  now we will run the command that point to the manifest file and the folder srcr like so : 
+    - **UserService**: Business logic related to user management.
+
+
 ## 🛠 Skills
 <p>
     <img src="https://skillicons.dev/icons?i=git,idea,java" height="45" alt="skills"  />
