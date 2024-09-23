@@ -368,7 +368,7 @@ public class Main {
         choice = input.nextLine();
         input.nextLine();
         if (choice.equals("y")) {
-            System.out.println("Enter TVA percentage (%)");
+            System.out.println("Enter Profit Margin percentage (%)");
             double percentage = input.nextDouble();
             input.nextLine();
             profitMargin = percentage / 100;
@@ -434,6 +434,7 @@ public class Main {
     }
 
     public static void resultOfAProject(String projectName, User client, List<Material> materials, List<Labor> labors, double TVA, double discount, double profitMargin) throws SQLException {
+
         System.out.println("\n***Result of calculations***\n");
         System.out.println("Name of the project :" + projectName);
         System.out.println("Client address :" + client.getAddress());
@@ -456,15 +457,17 @@ public class Main {
             totalForLabors += costOfLabor;
         }
         System.out.println("Total cost of labors without TVA is :" + totalForLabors + "$");
-        System.out.println("Total cost of labors with TVA("+TVA*100+"%)is :" + totalForLabors + (totalForLabors * TVA) + "$");
+        System.out.println("Total cost of labors with TVA("+TVA*100+"%)is :" + (totalForLabors + (totalForLabors * TVA)) + "$");
         double totalCostWithTVA = (totalForLabors + totalForMaterials) + ((totalForLabors + totalForMaterials) * TVA);
         System.out.println("\n\n3-Cost total before profit margin is : " + totalCostWithTVA + "$");
         double profitMarginCost = totalCostWithTVA * profitMargin;
         System.out.println("4-Profit margin(" + profitMargin * 100 + "%) : " + profitMarginCost + "$");
         double discountCost = (profitMarginCost + totalCostWithTVA) * discount;
+        discountCost = (double)(Math.round(discountCost*100)/100);
         System.out.println("5-Discount(" + discount * 100 + "%) : " + discountCost + "$");
         double costTotal = totalCostWithTVA + profitMarginCost - discountCost;
-        System.out.println("Cost total of project after all is : " + costTotal);
+        costTotal = (double) (Math.round(costTotal * 100) /100);
+        System.out.println("Cost total of project after all is : " + costTotal+"$");
         System.out.println("\nDo you want to save the estimate of the project(y/n)");
         String option = input.nextLine();
         input.nextLine();
@@ -609,7 +612,7 @@ public class Main {
 
     //VI-Client Section
     //if the user already fetched estimates from database, it means that projects were already assigned to the user, that's why i check the presence of projects using getProjects().
-    public static void myProjects() {
+    public static void myProjects() throws SQLException {
         List<Project> projects;
         if (currentUser.getProjects() == null) {
             projects = projectService.getProjectsOfUser(currentUser);
@@ -632,7 +635,7 @@ public class Main {
         }
 
         System.out.println("+----------------------------------+---------------+------------------------+----------------+");
-
+clientMenu();
     }
 
     //if the user choose to view estimates before projects , that means both the projects and the estimates will be fetched from database and assigned to user , i also use distinct to select only distinct projects since a project can have many estimates which may result assigning duplicated projects to the user.
@@ -729,6 +732,8 @@ public class Main {
                 });
             }
         }
+        clientMenu();
+
     }
 
     public static void refuseAnEstimate(Optional<Estimate> choosedEstimate) throws SQLException {
@@ -743,6 +748,8 @@ public class Main {
                 currentUser.getProjects().stream().filter(project -> project.getId() == choosedEstimate.get().getProject().getId()).forEach(project -> project.setStatus(Status.Canceled));
             }
         }
+        clientMenu();
+
     }
 
 }
