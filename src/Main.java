@@ -375,7 +375,7 @@ public class Main {
         }
         resultOfAProject(projectName, client, materials, labors, TVA, discount, profitMargin);
     }
-
+    //since the client can add multiple materials we need a separate method to handle just the insertion of the materials
     public static List<Material> addMaterials() {
         System.out.println("\n*****Adding of Materials*****\n");
         boolean keepAddingMaterial = false;
@@ -405,7 +405,7 @@ public class Main {
 
         return materials;
     }
-
+    //since the client can add multiple labors we need a separate method to handle just the insertion of the labors
     public static List<Labor> addLabors() {
         System.out.println("\n*****Adding of Labors*****\n");
         boolean keepAddingLabor = false;
@@ -432,7 +432,7 @@ public class Main {
 
         return labors;
     }
-
+    //calculating information like profit margin, Tva cost ..etc need to be done here since the project data is not :registered until the client accept the estimate , that's why i need this method to calculate the necessary attribute and to ensure that the client wants to accept the estimate , if not accepted all the data collected will be moved to trash
     public static void resultOfAProject(String projectName, User client, List<Material> materials, List<Labor> labors, double TVA, double discount, double profitMargin) throws SQLException {
 
         System.out.println("\n***Result of calculations***\n");
@@ -488,7 +488,7 @@ public class Main {
             adminMenu();
         }
     }
-
+    //when collecting all the information of project labors and materials ..etc now we need to handle the insertion to the database i create this method to communicate with the services
     public static void callingServicesToInsertData(User client, String projectName, double profitMargin, double costTotal, List<Labor> labors, List<Material> materials, LocalDate createdAt, LocalDate validatedUntil, double TVA) throws SQLException {
         Project project = projectService.addProject(client, projectName, profitMargin, costTotal);
         materialService.addMaterials(materials, project.getId(), TVA);
@@ -499,7 +499,7 @@ public class Main {
         }
         adminMenu();
     }
-
+    //admin will check if the client name entered really exist or not
     public static void assignProjectToAClient() throws SQLException {
         System.out.println("Enter Client Name");
         String name = input.nextLine();
@@ -520,7 +520,7 @@ public class Main {
 
         adminMenu();
     }
-
+    //admin can add a user(client) if there is no one found with the same name
     public static User addUser(String oldName) throws SQLException {
         System.out.println("Do you want to keep " + oldName + " as the name of the client (y/n)");
         String option = input.nextLine();
@@ -553,7 +553,7 @@ public class Main {
         }
         return newClient;
     }
-
+    //admin must have a point of vue of all users , specially their role
     public static void manageUsers() throws SQLException {
         List<User> users = userService.getAll();
         System.out.println("""
@@ -594,6 +594,7 @@ public class Main {
         adminMenu();
     }
 
+    //in case the admin want to add another admin to help him
     public static void changeRole(User user) throws SQLException {
         System.out.println("Do you really want to change the role of " + user.getName() + " to " + (user.getRole().equals(Role.Admin) ? "Client" : "Admin") + " (y/n)");
         String option = input.nextLine();
@@ -713,7 +714,7 @@ clientMenu();
         }
         clientMenu();
     }
-
+    //in case the user accept the estimate all the estimate of the same project will no longer be available since they point to the same project which will be completed
     public static void acceptAnEstimate(Optional<Estimate> choosedEstimate) throws SQLException {
         System.out.println("Do you really want to accept this estimate(y/n)");
         String option = input.nextLine();
@@ -736,6 +737,7 @@ clientMenu();
 
     }
 
+    // in case the client refuse the estimate of the project the project also will be updated to canceled estimate will no longer be available to accept after refusing it
     public static void refuseAnEstimate(Optional<Estimate> choosedEstimate) throws SQLException {
         System.out.println("Do you really want to refuse this estimate(y/n)");
         String choice = input.nextLine();
@@ -744,7 +746,6 @@ clientMenu();
             clientMenu();
         } else {
             if (projectService.refuseProject(choosedEstimate.get().getProject()) != null) {
-                //need to update the project status of the current user so if i want the getProject it will be updated
                 currentUser.getProjects().stream().filter(project -> project.getId() == choosedEstimate.get().getProject().getId()).forEach(project -> project.setStatus(Status.Canceled));
             }
         }
