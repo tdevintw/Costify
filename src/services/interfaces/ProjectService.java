@@ -5,7 +5,7 @@ import domain.*;
 import java.util.List;
 
 public interface ProjectService {
-    Project addProject(User client , String projectName , List<Material> materials , List<Labor> labors , double TVA , double profitMargin );
+    Project addProject(User client, String projectName , double profitMargin , double costTotal );
     void showProject(Project project);
 
     List<Project> getProjectsOfUser(User user);

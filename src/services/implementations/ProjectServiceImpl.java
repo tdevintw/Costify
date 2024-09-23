@@ -20,25 +20,8 @@ public class ProjectServiceImpl implements ProjectService {
 
 
     @Override
-    public Project addProject(User client, String projectName, List<Material> materials, List<Labor> labors, double TVA, double profitMargin) {
-        double laborsTotalCost = labors.stream().mapToDouble(labor -> labor.getCostPerHour() * labor.getHoursOfWork() * labor.getQualityCoefficient())
-                .sum();
-        double materialsTotalCost = materials.stream().mapToDouble(material -> (material.getQuantity() * material.getCostPerUnit() * material.getQualityCoefficient()) + material.costOfTransport())
-                .sum();
-        double costWithoutProfit = (materialsTotalCost + laborsTotalCost) +(materialsTotalCost + laborsTotalCost) * TVA;
-        double costWithProfit = costWithoutProfit + (costWithoutProfit * (profitMargin/100));
-        Project project = projectRepository.addProject(client.getId(), projectName, profitMargin, costWithProfit, Status.InProgress);
-        project.setUser(client);
-        project.setLabors(labors);
-        project.setMaterials(materials);
-        project.getLabors().forEach(labor -> labor.setProject(project));
-        project.getMaterials().forEach(material -> material.setProject(project));
-        project.getLabors().forEach(labor -> labor.setTVA(TVA));
-        project.getMaterials().forEach(material -> material.setTVA(TVA));
-        project.getLabors().forEach(labor -> laborRepository.addLabor(labor));
-        project.getMaterials().forEach(material -> materialRepository.addMaterial(material));
-        return project;
-
+    public Project addProject(User client, String projectName , double profitMargin , double costTotal) {
+        return projectRepository.addProject( client,  projectName ,  profitMargin ,  costTotal);
     }
 
     @Override

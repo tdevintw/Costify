@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface EstimateService {
-    boolean addEstimate(Project project , LocalDate createdDate , LocalDate validatedDate);
+    Estimate addEstimate(int projectId , double costTotal , LocalDate createdAt , LocalDate validatedUntil);
 
     List<Estimate> getEstimatesOfUser(User user);
 

@@ -8,10 +8,10 @@ import java.sql.*;
 
 public class LaborRepository {
 
-    public boolean addLabor(Labor labor){
+    public boolean addLabors(Labor labor , int projectId){
         String query = "INSERT INTO labors (project_id , name , component_type , tva , quality_coefficient , cost_per_hour , hours_of_work) VALUES(?,?,?,?,?,?,?)";
         try(Connection connection = Database.getInstance().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS) ){
-            preparedStatement.setInt(1,labor.getProject().getId());
+            preparedStatement.setInt(1,projectId);
             preparedStatement.setString(2,labor.getName());
             preparedStatement.setString(3,labor.getComponentType());
             preparedStatement.setDouble(4,labor.getTVA());

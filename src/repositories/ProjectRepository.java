@@ -76,21 +76,21 @@ public class ProjectRepository {
         }
     }
 
-    public Project addProject(int userId , String name , double profitMargin , double costTotal , Status status) {
+    public Project addProject(User client, String projectName , double profitMargin , double costTotal) {
         String query = "INSERT INTO projects (user_id , name , profit_margin , cost_total , status) VALUES(?,?,?,?,?)";
         try(Connection connection = Database.getInstance().getConnection()  ;PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS) ){
-            preparedStatement.setInt(1,userId);
-            preparedStatement.setString(2,name);
+            preparedStatement.setInt(1,client.getId());
+            preparedStatement.setString(2,projectName);
             preparedStatement.setDouble(3,profitMargin);
             preparedStatement.setDouble(4,costTotal);
-            preparedStatement.setObject(5, status , Types.OTHER);
+            preparedStatement.setObject(5, Status.InProgress , Types.OTHER);
             int rowsAdded = preparedStatement.executeUpdate();
             if(rowsAdded>0){
                 System.out.println("project added");
                 try(ResultSet resultSet = preparedStatement.getGeneratedKeys()){
                 if(resultSet.next()){
                     int id = resultSet.getInt(1);
-                    return new Project(id , name , profitMargin , costTotal , status , null , null , null , null);
+                    return new Project(id , projectName , profitMargin , costTotal , Status.InProgress , null , null , null , null);
                 }else{
                     System.out.println("retrieving id failed");
                     return null;

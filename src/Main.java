@@ -438,12 +438,23 @@ public class Main {
             String validatedUntilString = input.next();
             LocalDate creationDate = LocalDate.parse(createdAt,formatter);
             LocalDate validatedUntil = LocalDate.parse(validatedUntilString,formatter);
-            //insert project into the database + labors + materials + estimate
+            callingServicesToInsertData(client , projectName , profitMargin , costTotal , labors , materials , creationDate , validatedUntil);
             System.out.println("Project and Estimate was saved");
         }else{
             System.out.println("All you previous data will be deleted...");
             adminMenu();
         }
+    }
+
+    public static void callingServicesToInsertData(User client , String projectName , double profitMargin , double costTotal ,List<Labor> labors , List<Material> materials , LocalDate createdAt , LocalDate validatedUntil) throws SQLException {
+        Project project = projectService.addProject(client , projectName , profitMargin ,costTotal);
+        materialService.addMaterials(materials , project.getId());
+        laborService.addLabors(labors , project.getId());
+        Estimate estimate = estimateService.addEstimate(project.getId() , costTotal , createdAt , validatedUntil);
+        if(estimate!=null){
+            System.out.println("estimate was added");
+        }
+        adminMenu();
     }
 
 

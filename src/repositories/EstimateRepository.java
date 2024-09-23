@@ -12,25 +12,30 @@ import java.util.List;
 
 public class EstimateRepository {
 
-    public boolean addEstimate(int projectId , double costTotal , LocalDate creationDate , LocalDate validatedAt , boolean isAccepted){
+    public Estimate addEstimate(int projectId ,double costTotal , LocalDate createdAt , LocalDate validatedUntil){
         String query = "INSERT INTO estimates (project_id , cost_total , creation_date , validated_at , is_accepted) VALUES(?,?,?,?,?)";
-        try(Connection connection = Database.getInstance().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)){
+        try(Connection connection = Database.getInstance().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS)){
             preparedStatement.setInt(1,projectId);
             preparedStatement.setDouble(2,costTotal);
-            preparedStatement.setDate(3,Date.valueOf(creationDate));
-            preparedStatement.setDate(4, Date.valueOf(validatedAt));
-            preparedStatement.setBoolean(5, isAccepted);
+            preparedStatement.setDate(3,Date.valueOf(createdAt));
+            preparedStatement.setDate(4, Date.valueOf(validatedUntil));
+            preparedStatement.setBoolean(5, false);
             int rowsAdded = preparedStatement.executeUpdate();
             if(rowsAdded>0){
                 System.out.println("estimate added");
-                return true;
+                ResultSet resultSet = preparedStatement.getGeneratedKeys();
+                if(resultSet.next()){
+                    int estimateId = resultSet.getInt("id");
+                    return new Estimate(estimateId , costTotal , createdAt , validatedUntil , false , null);
+                }
             }else{
                 System.out.println("can't add estimate");
-                return  false;
+                return  null;
             }
         }catch (SQLException e){
             throw new RuntimeException(e);
         }
+        return null;
     }
 
 

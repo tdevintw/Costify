@@ -18,8 +18,8 @@ public class EstimateServiceImpl implements EstimateService {
     private ProjectRepository projectRepository = new ProjectRepository();
 
     @Override
-    public boolean addEstimate(Project  project, LocalDate createdDateOfEstimate , LocalDate validatedDateOfEstimate){
-        return estimateRepository.addEstimate(project.getId() , project.getCostTotal() , createdDateOfEstimate,validatedDateOfEstimate,false);
+    public Estimate addEstimate(int projectId , double costTotal ,LocalDate  createdAt ,  LocalDate validatedUntil){
+        return estimateRepository.addEstimate(projectId , costTotal , createdAt , validatedUntil);
     }
 
     @Override
