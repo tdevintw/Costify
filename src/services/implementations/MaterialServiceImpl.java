@@ -12,9 +12,9 @@ public class MaterialServiceImpl implements MaterialService {
 
     private  MaterialRepository materialRepository = new MaterialRepository();
     @Override
-    public List<Material> addMaterials(List<Material> materials , int projectId) {
+    public List<Material> addMaterials(List<Material> materials , int projectId , double TVA) {
         for(Material material : materials){
-            materialRepository.addMaterial(material,projectId);
+            materialRepository.addMaterial(material,projectId,TVA);
         }
         return materials;
     }

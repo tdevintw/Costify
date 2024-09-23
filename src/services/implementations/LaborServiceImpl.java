@@ -12,9 +12,9 @@ import java.util.Scanner;
 public class LaborServiceImpl implements LaborService {
     private LaborRepository laborRepository = new LaborRepository();
     @Override
-    public List<Labor> addLabors(List<Labor> labors , int projectId) {
+    public List<Labor> addLabors(List<Labor> labors , int projectId , double TVA) {
         for(Labor labor : labors){
-            laborRepository.addLabors(labor , projectId);
+            laborRepository.addLabors(labor , projectId,TVA);
         }
         return labors;
     }

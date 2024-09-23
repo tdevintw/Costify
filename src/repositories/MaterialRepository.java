@@ -10,12 +10,12 @@ import java.sql.Statement;
 
 public class MaterialRepository {
 
-    public boolean addMaterial(Material material , int projectId){
+    public boolean addMaterial(Material material , int projectId, double TVA){
         String query = "INSERT INTO materials ( name , component_type , tva , quality_coefficient , cost_per_unit , quantity , cost_of_transport , project_id) VALUES(?,?,?,?,?,?,?,?)";
         try(Connection connection = Database.getInstance().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS) ){
             preparedStatement.setString(1,material.getName());
             preparedStatement.setString(2,material.getComponentType());
-            preparedStatement.setDouble(3,material.getTVA());
+            preparedStatement.setDouble(3,TVA*100);
             preparedStatement.setDouble(4,material.getQualityCoefficient());
             preparedStatement.setDouble(5,material.getCostPerUnit());
             preparedStatement.setDouble(6,material.getQuantity());

@@ -23,8 +23,7 @@ public class Main {
     private static ProjectService projectService = new ProjectServiceImpl();
     private static EstimateService estimateService = new EstimateServiceImpl();
     private static Scanner input = new Scanner(System.in);
-    private static Scanner inputInt = new Scanner(System.in);
-    private static Scanner inputDouble = new Scanner(System.in);
+
 
     //  I-Adding  A logo section to enhance the design of the console application.
     public static void logo() {
@@ -61,6 +60,7 @@ public class Main {
                 2-Register
                 """);
         int option = input.nextInt();
+        input.nextLine();
         switch (option) {
             case 1:
                 loginLMenu();
@@ -80,12 +80,14 @@ public class Main {
         while (currentUser == null) {
             System.out.println("Enter Your ***Name*** :");
             String name = input.next();
+            input.nextLine();
             System.out.println("Enter Your ***Password*** :");
             String password = input.next();
             User user = Login.isUserExist(name, password);
             if (user == null) {
                 System.out.println("Do you want to try again or exit | 1-Exit other-Try Again");
-                int choice = inputInt.nextInt();
+                int choice = input.nextInt();
+                input.nextLine();
                 if (choice == 2) {
                     notAuthenticatedMenu();
                 }
@@ -101,15 +103,20 @@ public class Main {
 
         System.out.println("***Name*** :  ");
         String name = input.next();
+        input.nextLine();
         System.out.println("***Password*** :  ");
         String password = input.next();
+        input.nextLine();
         System.out.print("***Address*** :  ");
         String address = input.next();
+        input.nextLine();
         System.out.print("***phone*** (+212 xxx-xx-xx-xx) :  ");
         String phone = input.next();
+        input.nextLine();
         boolean isProfessional;
         System.out.print("An  ***Individual*** or a ***Company*** 1-individual other-company :  ");
-        int option = inputInt.nextInt();
+        int option = input.nextInt();
+        input.nextLine();
         isProfessional = option != 1;
         return Register.createUser(name, password, address, phone, isProfessional);
     }
@@ -124,7 +131,8 @@ public class Main {
             if (user == null) {
                 System.out.println("Do you want to 1-Exit or other-Try Again");
             }
-            int choice = inputInt.nextInt();
+            int choice = input.nextInt();
+            input.nextLine();
             if (choice == 1) {
                 notAuthenticatedMenu();
             }
@@ -162,7 +170,8 @@ public class Main {
                     4-Manage Users
                     5-Logout
                     """);
-            option = inputInt.nextInt();
+            option = input.nextInt();
+            input.nextLine();
             switch (option) {
                 case 1:
                     managePersonalInformation();
@@ -196,6 +205,7 @@ public class Main {
                     4-Logout
                     """);
             option = input.nextInt();
+            input.nextLine();
             switch (option) {
                 case 1:
                     managePersonalInformation();
@@ -226,6 +236,8 @@ public class Main {
                     3-Delete Account
                     """);
             option = input.nextInt();
+            input.nextLine();
+
             switch (option) {
                 case 1:
                     System.out.println("***Name*** : " + currentUser.getName());
@@ -261,32 +273,39 @@ public class Main {
                 4-Phone
                 5-Professional Type
                 """);
-        int option = inputInt.nextInt();
+        int option = input.nextInt();
+        input.nextLine();
+
         switch (option) {
             case 1:
                 System.out.println("Enter Your new Name");
-                String newName = input.next();
+                String newName = input.nextLine();
+                input.nextLine();
                 currentUser.setName(newName);
                 break;
             case 2:
                 System.out.println("Enter Your new Password");
-                String newPassword = input.next();
+                String newPassword = input.nextLine();
+                input.nextLine();
                 currentUser.setPassword(newPassword);
 
                 break;
             case 3:
                 System.out.println("Enter Your new Address");
-                String newAddress = input.next();
+                String newAddress = input.nextLine();
+                input.nextLine();
                 currentUser.setAddress(newAddress);
                 break;
             case 4:
                 System.out.println("Enter Your new Phone");
-                String newPhone = input.next();
+                String newPhone = input.nextLine();
+                input.nextLine();
                 currentUser.setPhone(newPhone);
                 break;
             case 5:
                 System.out.println("Enter Your new Professional Type \n 1-Individual \n 2-Company");
-                int choice = inputInt.nextInt();
+                int choice = input.nextInt();
+                input.nextLine();
                 boolean isProfessional = choice != 1;
                 currentUser.setProfessional(isProfessional);
                 break;
@@ -297,7 +316,8 @@ public class Main {
     ///IV-III/ Delete Account
     public static void deleteAccount() throws SQLException {
         System.out.println("Are you sure you want to delete your account");
-        String option = input.next();
+        String option = input.nextLine();
+        input.nextLine();
         if (option.equals("y")) {
             userService.deleteAccount(currentUser);
         }
@@ -318,156 +338,177 @@ public class Main {
     public static void addProjectToClient(User client) throws SQLException {
         System.out.println("Information of client selected : \nName" + client.getName() + "\nAddress : " + client.getAddress() + "\nPhone : " + client.getPhone());
         System.out.println("Enter Project Name");
-        String projectName = input.next();
+        String projectName = input.nextLine();
+        input.nextLine();
         List<Material> materials = addMaterials();
         List<Labor> labors = addLabors();
         double TVA = 0;
         double discount = 0;
-        double profitMargin = 0 ;
+        double profitMargin = 0;
         System.out.println("\n*****Calculating of cost total*****\n");
         System.out.println("Do you want to apply TVA to this Project(y/n)");
-        String choice = input.next();
-        if(choice.equals("y")){
+        String choice = input.nextLine();
+        input.nextLine();
+        if (choice.equals("y")) {
             System.out.println("Enter TVA percentage (%)");
-            double percentage = inputDouble.nextDouble();
-            TVA =  percentage /100;
+            double percentage = input.nextDouble();
+            input.nextLine();
+            TVA = percentage / 100;
         }
-        System.out.println("this user is "  + ((client.isProfessional()) ? " a company" : " An individual ") + " Do you want to apply a discount");
-        choice = input.next();
-        if(choice.equals("y")){
+        System.out.println("this user is " + ((client.isProfessional()) ? " a company" : " An individual ") + " Do you want to apply a discount");
+        choice = input.nextLine();
+        input.nextLine();
+        if (choice.equals("y")) {
             System.out.println("Enter Discount percentage (%)");
-            double percentage = inputDouble.nextDouble();
-            discount =  percentage /100;
+            double percentage = input.nextDouble();
+            input.nextLine();
+            discount = percentage / 100;
         }
         System.out.println("Do you want to apply Profit margin to this Project(y/n)");
-        choice = input.next();
-        if(choice.equals("y")){
+        choice = input.nextLine();
+        input.nextLine();
+        if (choice.equals("y")) {
             System.out.println("Enter TVA percentage (%)");
-            double percentage = inputDouble.nextDouble();
-            profitMargin =  percentage /100;
+            double percentage = input.nextDouble();
+            input.nextLine();
+            profitMargin = percentage / 100;
         }
-        resultOfAProject(projectName , client , materials , labors , TVA , discount , profitMargin);
-        }
+        resultOfAProject(projectName, client, materials, labors, TVA, discount, profitMargin);
+    }
 
-    public static  List<Material>  addMaterials(){
+    public static List<Material> addMaterials() {
         System.out.println("\n*****Adding of Materials*****\n");
         boolean keepAddingMaterial = false;
         List<Material> materials = new ArrayList<>();
         do {
             System.out.println("Enter the name of the material");
-            String materialName = input.next();
+            String materialName = input.nextLine();
+            input.nextLine();
             System.out.println("Enter the quantity of this material");
-            double quantity = inputDouble.nextDouble();
+            double quantity = input.nextDouble();
+            input.nextLine();
             System.out.println("Enter cost per unit of this material");
-            double costPerUnit = inputDouble.nextDouble();
+            double costPerUnit = input.nextDouble();
+            input.nextLine();
             System.out.println("Enter the cost of transport for this package of material");
-            double costOfTransport = inputDouble.nextDouble();
+            double costOfTransport = input.nextDouble();
+            input.nextLine();
             System.out.println("Enter the coefficient quality of this product(1.0 standard ,>1.0 good quality )");
-            double quality = inputDouble.nextDouble();
-            materials.add(new Material(materialName , "Material" , 0 , quality , null , costPerUnit , quantity , costOfTransport)); //must set project and tva afterward
+            double quality = input.nextDouble();
+            input.nextLine();
+            materials.add(new Material(materialName, "Material", 0, quality, null, costPerUnit, quantity, costOfTransport)); //must set project and tva afterward
             System.out.println("Material was added \nDo you want to add another Material(y/n)");
-            String option = input.next();
+            String option = input.nextLine();
+            input.nextLine();
             keepAddingMaterial = option.equals("y");
-        }while (keepAddingMaterial);
+        } while (keepAddingMaterial);
 
         return materials;
     }
 
-    public static  List<Labor>  addLabors(){
+    public static List<Labor> addLabors() {
         System.out.println("\n*****Adding of Labors*****\n");
         boolean keepAddingLabor = false;
         List<Labor> labors = new ArrayList<>();
         do {
             System.out.println("Enter the speciality of the Labor");
-            String laborName = input.next();
-
+            String laborName = input.nextLine();
+            input.nextLine();
             System.out.println("Enter cost per Hour of this Labor");
-            double costPerHour = inputDouble.nextDouble();
+            double costPerHour = input.nextDouble();
+            input.nextLine();
             System.out.println("Enter Total Hours Worked by this labor");
-            double totalOfHours = inputDouble.nextDouble();
+            double totalOfHours = input.nextDouble();
+            input.nextLine();
             System.out.println("Enter the coefficient of professionalism of this Labor(1.0 standard ,>1.0 good quality )");
-            double quality = inputDouble.nextDouble();
-            labors.add(new Labor(laborName , "Labor" , 0 , quality , null , costPerHour , totalOfHours)); //must set project and tva afterward
+            double quality = input.nextDouble();
+            input.nextLine();
+            labors.add(new Labor(laborName, "Labor", 0, quality, null, costPerHour, totalOfHours)); //must set project and tva afterward
             System.out.println("Labor was added \nDo you want to add another Labor(y/n)");
-            String option = input.next();
+            String option = input.nextLine();
+            input.nextLine();
             keepAddingLabor = option.equals("y");
-        }while (keepAddingLabor);
+        } while (keepAddingLabor);
 
         return labors;
     }
 
-    public static void resultOfAProject(String projectName , User client , List<Material> materials , List<Labor> labors ,double TVA , double discount , double profitMargin) throws SQLException {
+    public static void resultOfAProject(String projectName, User client, List<Material> materials, List<Labor> labors, double TVA, double discount, double profitMargin) throws SQLException {
         System.out.println("\n***Result of calculations***\n");
-        System.out.println("Name of the project :"+projectName);
-        System.out.println("Client address :"+client.getAddress());
+        System.out.println("Name of the project :" + projectName);
+        System.out.println("Client address :" + client.getAddress());
         System.out.println("Details of costs");
         System.out.println("1-Materials:");
         double totalForMaterials = 0;
-        for (Material material : materials){
+        for (Material material : materials) {
             double costOfMaterialPackage = materialService.costTotalOfAMaterialPackage(material);
-            System.out.println("-"+material.getName()+" : " +costOfMaterialPackage+"$(quantity : "+material.getQuantity() + ", cost per unit : "+material.getCostPerUnit()+"$ ,quality : " + material.getQualityCoefficient() + ",cost of transport : "+material.costOfTransport()+"$)");
+            System.out.println("-" + material.getName() + " : " + costOfMaterialPackage + "$(quantity : " + material.getQuantity() + ", cost per unit : " + material.getCostPerUnit() + "$ ,quality : " + material.getQualityCoefficient() + ",cost of transport : " + material.costOfTransport() + "$)");
             totalForMaterials += costOfMaterialPackage;
         }
         System.out.println("Total cost of Materials without TVA is :" + totalForMaterials + "$");
-        System.out.println("Total cost of Materials with TVA is :" + (totalForMaterials+(totalForMaterials*TVA)) + "$");
+        System.out.println("Total cost of Materials with TVA is :" + (totalForMaterials + (totalForMaterials * TVA)) + "$");
 
         System.out.println("\n\n2-Labors:");
         double totalForLabors = 0;
-        for (Labor labor : labors){
+        for (Labor labor : labors) {
             double costOfLabor = laborService.costTotalOfALabor(labor);
-            System.out.println("-"+labor.getName()+":"+costOfLabor+"$(cost per hour : "+labor.getCostPerHour() + ",hours worked: "+labor.getHoursOfWork()+" ,productivity : "+labor.getQualityCoefficient());
+            System.out.println("-" + labor.getName() + ":" + costOfLabor + "$(cost per hour : " + labor.getCostPerHour() + ",hours worked: " + labor.getHoursOfWork() + " ,productivity : " + labor.getQualityCoefficient());
             totalForLabors += costOfLabor;
         }
         System.out.println("Total cost of labors without TVA is :" + totalForLabors + "$");
-        System.out.println("Total cost of labors with TVA is :" + totalForLabors+(totalForLabors*TVA) + "$");
-        double totalCostWithTVA = (totalForLabors+totalForMaterials)+((totalForLabors+totalForMaterials)*TVA);
-        System.out.println("\n\n3-Cost total before profit margin is : " +totalCostWithTVA+"$");
-        double profitMarginCost = totalCostWithTVA*profitMargin;
-        System.out.println("4-Profit margin("+profitMargin*100+"%) : "+profitMarginCost+"$");
-        double discountCost = (profitMarginCost+totalCostWithTVA)*discount;
-        System.out.println("5-Discount("+discount*100+"%) : "+ discountCost+"$");
-        double costTotal = totalCostWithTVA+profitMarginCost-discountCost;
-        System.out.println("Cost total of project after all is : "+costTotal);
+        System.out.println("Total cost of labors with TVA is :" + totalForLabors + (totalForLabors * TVA) + "$");
+        double totalCostWithTVA = (totalForLabors + totalForMaterials) + ((totalForLabors + totalForMaterials) * TVA);
+        System.out.println("\n\n3-Cost total before profit margin is : " + totalCostWithTVA + "$");
+        double profitMarginCost = totalCostWithTVA * profitMargin;
+        System.out.println("4-Profit margin(" + profitMargin * 100 + "%) : " + profitMarginCost + "$");
+        double discountCost = (profitMarginCost + totalCostWithTVA) * discount;
+        System.out.println("5-Discount(" + discount * 100 + "%) : " + discountCost + "$");
+        double costTotal = totalCostWithTVA + profitMarginCost - discountCost;
+        System.out.println("Cost total of project after all is : " + costTotal);
         System.out.println("\nDo you want to save the estimate of the project(y/n)");
-        String option = input.next();
-        if(option.equals("y")){
+        String option = input.nextLine();
+        input.nextLine();
+        if (option.equals("y")) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             System.out.println("Enter creation date of estimate ");
-            String createdAt = input.next();
+            String createdAt = input.nextLine();
+            input.nextLine();
             System.out.println("Validated until");
-            String validatedUntilString = input.next();
-            LocalDate creationDate = LocalDate.parse(createdAt,formatter);
-            LocalDate validatedUntil = LocalDate.parse(validatedUntilString,formatter);
-            callingServicesToInsertData(client , projectName , profitMargin , costTotal , labors , materials , creationDate , validatedUntil);
+            String validatedUntilString = input.nextLine();
+            input.nextLine();
+            LocalDate creationDate = LocalDate.parse(createdAt, formatter);
+            LocalDate validatedUntil = LocalDate.parse(validatedUntilString, formatter);
+            callingServicesToInsertData(client, projectName, profitMarginCost, costTotal, labors, materials, creationDate, validatedUntil, TVA);
             System.out.println("Project and Estimate was saved");
-        }else{
+        } else {
             System.out.println("All you previous data will be deleted...");
             adminMenu();
         }
     }
 
-    public static void callingServicesToInsertData(User client , String projectName , double profitMargin , double costTotal ,List<Labor> labors , List<Material> materials , LocalDate createdAt , LocalDate validatedUntil) throws SQLException {
-        Project project = projectService.addProject(client , projectName , profitMargin ,costTotal);
-        materialService.addMaterials(materials , project.getId());
-        laborService.addLabors(labors , project.getId());
-        Estimate estimate = estimateService.addEstimate(project.getId() , costTotal , createdAt , validatedUntil);
-        if(estimate!=null){
+    public static void callingServicesToInsertData(User client, String projectName, double profitMargin, double costTotal, List<Labor> labors, List<Material> materials, LocalDate createdAt, LocalDate validatedUntil, double TVA) throws SQLException {
+        Project project = projectService.addProject(client, projectName, profitMargin, costTotal);
+        materialService.addMaterials(materials, project.getId(), TVA);
+        laborService.addLabors(labors, project.getId(), TVA);
+        Estimate estimate = estimateService.addEstimate(project.getId(), costTotal, createdAt, validatedUntil);
+        if (estimate != null) {
             System.out.println("estimate was added");
         }
         adminMenu();
     }
 
-
     public static void assignProjectToAClient() throws SQLException {
         System.out.println("Enter Client Name");
-        String name = input.next();
+        String name = input.nextLine();
+        input.nextLine();
         User user = userService.getUser(name);
         if (user == null) {
             System.out.println("Can't Found the user");
             System.out.println("Do you want to add this client");
-            String option = input.next();
+            String option = input.nextLine();
+            input.nextLine();
             if (option.equals("y")) {
-               user =  addUser(name);
+                user = addUser(name);
             }
         } else if (user.getRole().equals(Role.Admin)) {
             System.out.println("Can't assign a a project to an admin");
@@ -479,25 +520,31 @@ public class Main {
 
     public static User addUser(String oldName) throws SQLException {
         System.out.println("Do you want to keep " + oldName + " as the name of the client (y/n)");
-        String option = input.next();
+        String option = input.nextLine();
+        input.nextLine();
         String name;
         if (option.equals("y")) {
             name = oldName;
         } else {
             System.out.println("Enter the Name");
-            name = input.next();
+            name = input.nextLine();
+            input.nextLine();
         }
         System.out.println("Enter password");
-        String password = input.next();
+        String password = input.nextLine();
+        input.nextLine();
         System.out.println("Enter Address");
-        String address = input.next();
+        String address = input.nextLine();
+        input.nextLine();
         System.out.println("Enter Phone(+212 xxx-xx-xx-xx)");
-        String phone = input.next();
+        String phone = input.nextLine();
+        input.nextLine();
         System.out.println("is this client professional (y/n)");
-        String  isProfessional1 = input.next();
+        String isProfessional1 = input.nextLine();
+        input.nextLine();
         boolean isProfessional = isProfessional1.equals("y");
-        User newClient = Register.createUser(name , password , address ,phone , isProfessional);
-        if(newClient==null){
+        User newClient = Register.createUser(name, password, address, phone, isProfessional);
+        if (newClient == null) {
             System.out.println("Can't add user");
             adminMenu();
         }
@@ -524,10 +571,12 @@ public class Main {
         System.out.println("+-------+------------------+------------------+----------------------+------------------+------------------+");
 
         System.out.println("Do you want to change the role of a user(y/n)");
-        String choice = input.next();
+        String choice = input.nextLine();
+        input.nextLine();
         if (choice.equals("y")) {
             System.out.println("Enter the id of the user");
-            int id = inputInt.nextInt();
+            int id = input.nextInt();
+            input.nextLine();
             if (id == currentUser.getId()) {
                 System.out.println("You can't change your role");
             } else {
@@ -544,7 +593,8 @@ public class Main {
 
     public static void changeRole(User user) throws SQLException {
         System.out.println("Do you really want to change the role of " + user.getName() + " to " + (user.getRole().equals(Role.Admin) ? "Client" : "Admin") + " (y/n)");
-        String option = input.next();
+        String option = input.nextLine();
+        input.nextLine();
         if (option.equals("y")) {
             if (user.getRole().equals(Role.Admin)) {
                 user.setRole(Role.Client);
@@ -605,7 +655,8 @@ public class Main {
 
         System.out.println("+----------------------------------+---------------+------------------------+-------------------------+-------------+");
         System.out.println("Do you want to manage your estimates(y/n)");
-        String choice = input.next();
+        String choice = input.nextLine();
+        input.nextLine();
         if (choice.equals("y")) {
             manageEstimate(estimates);
         } else {
@@ -637,14 +688,16 @@ public class Main {
                 "+------------------+----------------------------------+---------------+------------------------+-------------------------+");
 
         System.out.println("Enter the id of the estimate you want to accept or refuse");
-        int choice = inputInt.nextInt();
+        int choice = input.nextInt();
+        input.nextLine();
         Optional<Estimate> choosedEstimate = estimates.stream().filter(estimate -> estimate.getId() == choice).findFirst();
         if (choosedEstimate.isEmpty()) {
             System.out.println("Can't found estimate");
             clientMenu();
         }
         System.out.println("Do you want to accept or refuse this Estimate(1-accept 2- refuse)");
-        int option = inputInt.nextInt();
+        int option = input.nextInt();
+        input.nextLine();
         switch (option) {
             case 1:
                 acceptAnEstimate(choosedEstimate);
@@ -660,7 +713,8 @@ public class Main {
 
     public static void acceptAnEstimate(Optional<Estimate> choosedEstimate) throws SQLException {
         System.out.println("Do you really want to accept this estimate(y/n)");
-        String option = input.next();
+        String option = input.nextLine();
+        input.nextLine();
         if (option.equals("n")) {
             clientMenu();
         } else {
@@ -679,7 +733,8 @@ public class Main {
 
     public static void refuseAnEstimate(Optional<Estimate> choosedEstimate) throws SQLException {
         System.out.println("Do you really want to refuse this estimate(y/n)");
-        String choice = input.next();
+        String choice = input.nextLine();
+        input.nextLine();
         if (choice.equals("n")) {
             clientMenu();
         } else {
