@@ -355,7 +355,7 @@ public class Main {
             input.nextLine();
             TVA = percentage / 100;
         }
-        System.out.println("this user is " + ((client.isProfessional()) ? " a company" : " An individual ") + " Do you want to apply a discount");
+        System.out.println("this user is " + ((client.isProfessional()) ? " a company" : " An individual ") + " Do you want to apply a discount(y/n)");
         choice = input.nextLine();
         input.nextLine();
         if (choice.equals("y")) {
@@ -446,7 +446,7 @@ public class Main {
             totalForMaterials += costOfMaterialPackage;
         }
         System.out.println("Total cost of Materials without TVA is :" + totalForMaterials + "$");
-        System.out.println("Total cost of Materials with TVA is :" + (totalForMaterials + (totalForMaterials * TVA)) + "$");
+        System.out.println("Total cost of Materials with TVA("+TVA*100+"%)is :" + (totalForMaterials + (totalForMaterials * TVA)) + "$");
 
         System.out.println("\n\n2-Labors:");
         double totalForLabors = 0;
@@ -456,7 +456,7 @@ public class Main {
             totalForLabors += costOfLabor;
         }
         System.out.println("Total cost of labors without TVA is :" + totalForLabors + "$");
-        System.out.println("Total cost of labors with TVA is :" + totalForLabors + (totalForLabors * TVA) + "$");
+        System.out.println("Total cost of labors with TVA("+TVA*100+"%)is :" + totalForLabors + (totalForLabors * TVA) + "$");
         double totalCostWithTVA = (totalForLabors + totalForMaterials) + ((totalForLabors + totalForMaterials) * TVA);
         System.out.println("\n\n3-Cost total before profit margin is : " + totalCostWithTVA + "$");
         double profitMarginCost = totalCostWithTVA * profitMargin;
