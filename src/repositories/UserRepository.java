@@ -14,7 +14,6 @@ import java.util.List;
 import static Auth.Register.isInputValid;
 
 public class UserRepository {
-    private ProjectRepository projectRepository = new ProjectRepository();
 
     public User getUser(String name) {
         String query = "SELECT * FROM users WHERE name = ?";
@@ -37,25 +36,6 @@ public class UserRepository {
             throw new RuntimeException(e);
         }
     }
-
-
-    public boolean updateUserRole(String name, String role) {
-        String query = "UPDATE users SET role = ? WHERE name = ? ";
-        try (Connection connection = Database.getInstance().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setObject(1, Role.valueOf(role), Types.OTHER);
-            preparedStatement.setString(2, name);
-            int updatedRows = preparedStatement.executeUpdate();
-            if (updatedRows > 0) {
-                System.out.println("user role updated ");
-                return true;
-            } else {
-                System.out.println("user name not found");
-                return false;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    } //no need for this anymore it will be placed by update
 
     public User update(User user) {
         User newUser = null;

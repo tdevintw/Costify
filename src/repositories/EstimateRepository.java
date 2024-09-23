@@ -38,8 +38,6 @@ public class EstimateRepository {
         return null;
     }
 
-
-
     public List<Estimate> getEstimatesOfProject(Project project){
         String q = "SELECT * FROM estimates WHERE project_id = ?";
         List<Estimate> estimates =  new ArrayList<>();

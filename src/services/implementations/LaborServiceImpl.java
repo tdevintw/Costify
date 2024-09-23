@@ -18,4 +18,9 @@ public class LaborServiceImpl implements LaborService {
         }
         return labors;
     }
+
+    @Override
+    public double costTotalOfALabor(Labor labor) {
+        return labor.getQualityCoefficient() * labor.getHoursOfWork() * labor.getCostPerHour();
+    }
 }
