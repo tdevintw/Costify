@@ -331,8 +331,127 @@ public class Main {
     //V-Admin Section
 
 
-    public static void manageProjects() {
+    public static void manageProjects() throws SQLException {
+        List<Project> projects = projectService.getAll();
 
+        System.out.println("All Projects : ");
+        System.out.println("""
+
+                +------------------+----------------------------------+---------------+---------------+---------------------+
+                |      ID          |         Project Name             | Profit Margin  |  Cost Total   |        Status       |
+                +------------------+----------------------------------+---------------+---------------+---------------------+""");
+
+        for (Project project : projects) {
+            System.out.printf("| %-16s | %-32s | %-13s | %-13s | %-17s |%n",
+                    project.getId(),
+                    project.getName(),
+                    project.getProfitMargin() + "%",
+                    project.getCostTotal() + "$",
+                    project.getStatus()
+            );
+        }
+
+        System.out.println(
+                "+------------------+----------------------------------+---------------+---------------+---------------------+");
+
+        System.out.println("Do you want to delete or update a project(y/n)");
+        String option = input.nextLine();
+        input.nextLine();
+        if (option.equals("y")) {
+            System.out.println("Do you want to 1-update 2-delete");
+            int choice = input.nextInt();
+            input.nextLine();
+            if (choice == 1) {
+                editProject(projects);
+            } else if (choice == 2) {
+                deleteProject(projects);
+            }
+        }
+        adminMenu();
+    }
+
+    public static int filtredProjects(List<Project> projects) {
+        projects = projects.stream().filter(project -> (project.getStatus().equals(Status.InProgress) || project.getStatus().equals(Status.Canceled))).collect(Collectors.toList());
+        System.out.println("""
+
+                +------------------+----------------------------------+---------------+---------------+---------------------+
+                |      ID          |         Project Name             | Profit Margin  |  Cost Total   |        Status       |
+                +------------------+----------------------------------+---------------+---------------+---------------------+""");
+
+        for (Project project : projects) {
+            System.out.printf("| %-16s | %-32s | %-13s | %-13s | %-17s |%n",
+                    project.getId(),
+                    project.getName(),
+                    project.getProfitMargin() + "%",
+                    project.getCostTotal() + "$",
+                    project.getStatus()
+            );
+        }
+
+        System.out.println(
+                "+------------------+----------------------------------+---------------+---------------+---------------------+");
+        return projects.size();
+    }
+
+    public static void editProject(List<Project> projects) throws SQLException {
+        if(filtredProjects(projects)==0){
+            System.out.println("There is not projects to manage");
+            adminMenu();
+        }
+        System.out.println("Enter the id of the project you want to edit");
+        int projectId = input.nextInt();
+        input.nextLine();
+        Optional<Project> project = projects.stream().filter(project1 -> project1.getId() == projectId).findFirst();
+        if (project.isEmpty()) {
+            System.out.println("There is no project with this id");
+        } else {
+            Project getProject = project.get();
+            System.out.println("what do you want to update \n1-name\n2-Profit Margin\n3-Cost Total");
+            int option = input.nextInt();
+            input.nextLine();
+            switch (option) {
+                case 1:
+                    System.out.println("Enter new Name");
+                    String name = input.nextLine();
+                    getProject.setName(name);
+                    input.nextLine();
+                    break;
+                case 2:
+                    System.out.println("Enter new profit margin");
+                    double profitMargin = input.nextDouble();
+                    getProject.setProfitMargin(profitMargin);
+                    input.nextLine();
+                    break;
+                case 3:
+                    System.out.println("Enter the new cost total");
+                    double costTotal = input.nextDouble();
+                    getProject.setCostTotal(costTotal);
+                    input.nextLine();
+                    ;
+                    break;
+                default:
+                    System.out.println("enter a valid number");
+                    adminMenu();
+            }
+            projectService.editProject(getProject);
+
+            adminMenu();
+
+        }
+    }
+
+    public static void deleteProject(List<Project> projects) throws SQLException {
+        filtredProjects(projects);
+        System.out.println("Enter the id of the project you want to delete");
+        int projectId = input.nextInt();
+        input.nextLine();
+        Optional<Project> project = projects.stream().filter(project1 -> project1.getId() == projectId).findFirst();
+        if (project.isEmpty()) {
+            System.out.println("There is no project with this id");
+        } else {
+            projectService.deleteProject(project.get());
+        }
+        adminMenu();
     }
 
     public static void addProjectToClient(User client) throws SQLException {
@@ -375,6 +494,7 @@ public class Main {
         }
         resultOfAProject(projectName, client, materials, labors, TVA, discount, profitMargin);
     }
+
     //since the client can add multiple materials we need a separate method to handle just the insertion of the materials
     public static List<Material> addMaterials() {
         System.out.println("\n*****Adding of Materials*****\n");
@@ -405,6 +525,7 @@ public class Main {
 
         return materials;
     }
+
     //since the client can add multiple labors we need a separate method to handle just the insertion of the labors
     public static List<Labor> addLabors() {
         System.out.println("\n*****Adding of Labors*****\n");
@@ -432,6 +553,7 @@ public class Main {
 
         return labors;
     }
+
     //calculating information like profit margin, Tva cost ..etc need to be done here since the project data is not :registered until the client accept the estimate , that's why i need this method to calculate the necessary attribute and to ensure that the client wants to accept the estimate , if not accepted all the data collected will be moved to trash
     public static void resultOfAProject(String projectName, User client, List<Material> materials, List<Labor> labors, double TVA, double discount, double profitMargin) throws SQLException {
 
@@ -447,7 +569,7 @@ public class Main {
             totalForMaterials += costOfMaterialPackage;
         }
         System.out.println("Total cost of Materials without TVA is :" + totalForMaterials + "$");
-        System.out.println("Total cost of Materials with TVA("+TVA*100+"%)is :" + (totalForMaterials + (totalForMaterials * TVA)) + "$");
+        System.out.println("Total cost of Materials with TVA(" + TVA * 100 + "%)is :" + (totalForMaterials + (totalForMaterials * TVA)) + "$");
 
         System.out.println("\n\n2-Labors:");
         double totalForLabors = 0;
@@ -457,17 +579,17 @@ public class Main {
             totalForLabors += costOfLabor;
         }
         System.out.println("Total cost of labors without TVA is :" + totalForLabors + "$");
-        System.out.println("Total cost of labors with TVA("+TVA*100+"%)is :" + (totalForLabors + (totalForLabors * TVA)) + "$");
+        System.out.println("Total cost of labors with TVA(" + TVA * 100 + "%)is :" + (totalForLabors + (totalForLabors * TVA)) + "$");
         double totalCostWithTVA = (totalForLabors + totalForMaterials) + ((totalForLabors + totalForMaterials) * TVA);
         System.out.println("\n\n3-Cost total before profit margin is : " + totalCostWithTVA + "$");
         double profitMarginCost = totalCostWithTVA * profitMargin;
         System.out.println("4-Profit margin(" + profitMargin * 100 + "%) : " + profitMarginCost + "$");
         double discountCost = (profitMarginCost + totalCostWithTVA) * discount;
-        discountCost = (double)(Math.round(discountCost*100)/100);
+        discountCost = (double) (Math.round(discountCost * 100) / 100);
         System.out.println("5-Discount(" + discount * 100 + "%) : " + discountCost + "$");
         double costTotal = totalCostWithTVA + profitMarginCost - discountCost;
-        costTotal = (double) (Math.round(costTotal * 100) /100);
-        System.out.println("Cost total of project after all is : " + costTotal+"$");
+        costTotal = (double) (Math.round(costTotal * 100) / 100);
+        System.out.println("Cost total of project after all is : " + costTotal + "$");
         System.out.println("\nDo you want to save the estimate of the project(y/n)");
         String option = input.nextLine();
         input.nextLine();
@@ -488,6 +610,7 @@ public class Main {
             adminMenu();
         }
     }
+
     //when collecting all the information of project labors and materials ..etc now we need to handle the insertion to the database i create this method to communicate with the services
     public static void callingServicesToInsertData(User client, String projectName, double profitMargin, double costTotal, List<Labor> labors, List<Material> materials, LocalDate createdAt, LocalDate validatedUntil, double TVA) throws SQLException {
         Project project = projectService.addProject(client, projectName, profitMargin, costTotal);
@@ -499,6 +622,7 @@ public class Main {
         }
         adminMenu();
     }
+
     //admin will check if the client name entered really exist or not
     public static void assignProjectToAClient() throws SQLException {
         System.out.println("Enter Client Name");
@@ -520,6 +644,7 @@ public class Main {
 
         adminMenu();
     }
+
     //admin can add a user(client) if there is no one found with the same name
     public static User addUser(String oldName) throws SQLException {
         System.out.println("Do you want to keep " + oldName + " as the name of the client (y/n)");
@@ -553,6 +678,7 @@ public class Main {
         }
         return newClient;
     }
+
     //admin must have a point of vue of all users , specially their role
     public static void manageUsers() throws SQLException {
         List<User> users = userService.getAll();
@@ -636,7 +762,7 @@ public class Main {
         }
 
         System.out.println("+----------------------------------+---------------+------------------------+----------------+");
-clientMenu();
+        clientMenu();
     }
 
     //if the user choose to view estimates before projects , that means both the projects and the estimates will be fetched from database and assigned to user , i also use distinct to select only distinct projects since a project can have many estimates which may result assigning duplicated projects to the user.
@@ -690,7 +816,8 @@ clientMenu();
 
         System.out.println(
                 "+------------------+----------------------------------+---------------+------------------------+-------------------------+");
-
+        System.out.println("There is not estimates to manage ");
+        clientMenu();
         System.out.println("Enter the id of the estimate you want to accept or refuse");
         int choice = input.nextInt();
         input.nextLine();
@@ -714,6 +841,7 @@ clientMenu();
         }
         clientMenu();
     }
+
     //in case the user accept the estimate all the estimate of the same project will no longer be available since they point to the same project which will be completed
     public static void acceptAnEstimate(Optional<Estimate> choosedEstimate) throws SQLException {
         System.out.println("Do you really want to accept this estimate(y/n)");

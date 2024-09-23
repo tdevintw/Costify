@@ -14,5 +14,9 @@ public interface ProjectService {
 
     Project refuseProject(Project project);
 
+    List<Project> getAll();
 
+    Project editProject(Project project);
+
+    boolean deleteProject(Project project);
 }
