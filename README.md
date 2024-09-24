@@ -14,8 +14,7 @@ I'm a developer who loves and uses Laravel to create web applications. My motto 
 - **Generate Estimates**: Users can generate estimates for their projects showing material and labor costs.
 - **View and Edit Personal Information**: Users can view and update their personal information.
 - **View Projects and Estimates**: Users can view a list of their projects and estimates.
-- **Filter Projects**: Users can filter projects by various criteria such as total cost, date range, or specific activities.
-
+  
 ## Client Features
 
 - **User Registration and Login**: Clients can create an account and log in to access their dashboard.
