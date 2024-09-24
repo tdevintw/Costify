@@ -77,7 +77,7 @@ The project contains the following key components:
     - **Creating of the MANIFEST.MF**: we will create a mf file that reference to the Main.class | MANIFEST file will include : ```Manifest-Version: 1.0   
       Main-Class: Main  ```
     - **Creating the jar **:  now we will run the command that point to the manifest file and the folder srcr like so : ```jar cfm costify.jar src/MANIFEST.MF -C srcr . ```| where the srcr folder contains the compiled files
-    - **Executing the Jar**: running ```javac -jar costify.jar``` will execute the jar | we need to be at the same path as the jar to have the permission to execute it using the command line .
+    - **Executing the Jar**: running ```java -jar costify.jar``` will execute the jar | we need to be at the same path as the jar to have the permission to execute it using the command line .
 
 ## 🛠 Skills
 <p>
