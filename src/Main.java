@@ -5,13 +5,11 @@ import domain.enums.Status;
 import services.implementations.*;
 import services.interfaces.*;
 
+import java.lang.reflect.Array;
 import java.time.format.DateTimeFormatter;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -46,6 +44,7 @@ public class Main {
 
     // II-the entry point of our application check of user authentication it's like a session checker.
     public static void main(String[] args) throws SQLException {
+
         while (currentUser == null) {
             notAuthenticatedMenu();
         }
