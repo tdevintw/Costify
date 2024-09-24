@@ -72,12 +72,12 @@ The project contains the following key components:
 - **Main**: Entry point of the application, handles user menus and interactions.
 
 - **Steps To Create the Jar file/**
-    - **Compile the main file**: we need to compile the enter point of our codd main.ja using the command javac main.java , we will take class file and we will put it into a new folder at the root called srcr
-    - **Copying all the other classes**: since IntelliJ compile our base code to class code and putting them into the out/ folder we will copy the classes of the out/production folder and we will paste it into the srcr folder aside the Main.class 
-    - **Creating of the MANIFEST.MF**: we will create a mf file that reference to the Main.class | MANIFEST file will include : Manifest-Version: 1.0  and 
-      Main-Class: Main  
-    - **Creating the jar **:  now we will run the command that point to the manifest file and the folder srcr like so : jar cfm costify.jar src/MANIFEST.MF -C srcr . | srcr contains the compiled files
-    - **Executing the Jar**: running javac -jar costify.jar will execute the jar | we need to be at the same patch as the jar to have permission
+    - **Compile the main file**: we need to compile the enter point of our code main.java using the command ```javac main.java``` , we will take class file and we will put it into a new folder at the root called ```srcr```
+    - **Copying all the other classes**: since IntelliJ compile our base code to class code and putting them into the out/ folder we will copy the classes of the out/production folder and we will paste it into the ```srcr``` folder aside the Main.class . If you dont work with an ide that compile the code you can compile all the java files to class files using ```javac -d srcr *.java```.
+    - **Creating of the MANIFEST.MF**: we will create a mf file that reference to the Main.class | MANIFEST file will include : ```Manifest-Version: 1.0   
+      Main-Class: Main  ```
+    - **Creating the jar **:  now we will run the command that point to the manifest file and the folder srcr like so : ```jar cfm costify.jar src/MANIFEST.MF -C srcr . ```| where the srcr folder contains the compiled files
+    - **Executing the Jar**: running ```javac -jar costify.jar``` will execute the jar | we need to be at the same path as the jar to have the permission to execute it using the command line .
 
 ## 🛠 Skills
 <p>
