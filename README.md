@@ -73,7 +73,7 @@ The project contains the following key components:
 
 - **Steps To Create the Jar file/**
     - **Compile the main file**: we need to compile the enter point of our code main.java using the command ```javac main.java``` , we will take class file and we will put it into a new folder at the root called ```srcr```
-    - **Copying all the other classes**: since IntelliJ compile our base code to class code and putting them into the out/ folder we will copy the classes of the out/production folder and we will paste it into the ```srcr``` folder aside the Main.class . If you dont work with an ide that compile the code you can compile all the java files to class files using ```javac -d srcr *.java```.
+    - **Copying all the other classes**: since IntelliJ compile our base code to class code and putting them into the out/ folder we will copy the classes of the out/production folder and we will paste it into the ```srcr``` folder aside the Main.class . If you dont work with an ide that compile the code you can compile all the java files to class files using ``` javac -d ./srcr/ (Get-ChildItem -Recurse -Filter *.java -Path ./src).FullName``` ths command will recompile the main file , delete the old one .
     - **Creating of the MANIFEST.MF**: we will create a mf file that reference to the Main.class | MANIFEST file will include : ```Manifest-Version: 1.0   
       Main-Class: Main  ```
     - **Creating the jar **:  now we will run the command that point to the manifest file and the folder srcr like so : ```jar cfm costify.jar src/MANIFEST.MF -C srcr . ```| where the srcr folder contains the compiled files
