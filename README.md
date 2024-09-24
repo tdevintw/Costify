@@ -44,7 +44,8 @@ The project contains the following key components:
 
 - **Domain/**
   - **Enum/**
-    - **ProjectType**: Enum class defining different types of projects.
+    - **Staus**: Enum class defining different status of projects.
+    - **Role**: Difining different roles of the user
   - **Material**: Represents material-related cost data.
   - **Labor**: Represents labor-related cost data.
   - **Estimate**: Generates estimates based on project data.
