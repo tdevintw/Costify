@@ -7,6 +7,9 @@ Coding enthusiast and full stack developer who loves solving problems and bringi
 
 I'm a developer who loves and uses Laravel to create web applications. My motto in web development is to create something that I want to use as a client because I think that if we understand our customers' needs, we will satisfy them. Web development is not just about a website but instead a brand and an identity that represents the developer and the client. I will do the best I can to develop the best product.
 
+## Preview 
+![Preview](https://i.ibb.co/jbcPtmj/Preview.png)
+
 ## Features
 
 - **User Registration and Login**: Users can create an account and log in to manage their projects.
