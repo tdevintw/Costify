@@ -12,6 +12,8 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.groupingBy;
+
 public class Main {
 
     private static User currentUser;
@@ -49,8 +51,9 @@ public class Main {
             notAuthenticatedMenu();
         }
         checkRoleToRedirectToMenu();
-    }
 
+
+    }
     //III-All the 6 methods below are for authentication purposes they are used to link the user with the database.
     public static void notAuthenticatedMenu() throws SQLException {
         logo();
